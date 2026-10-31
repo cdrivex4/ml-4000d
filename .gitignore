@@ -1,0 +1,60 @@
+# ==============================================================================
+# Canon EOS 4000D / Rebel T100 Magic Lantern Port - Strict Git Ignore
+# ==============================================================================
+
+# Strict Canon Proprietary & Copyrighted Material Blacklist
+firmware/
+*.FIR
+*.fir
+*.BIN
+*.bin
+!liveSDCard/autoexec.bin
+romdump/
+update-procedure-pdf/
+*.dumper
+
+# Toolchains, Emulators & Heavy Environments
+tools/
+ghidra/
+qemu-eos/
+rea/
+.venv/
+node_modules/
+magic-lantern/
+magic-lantern-1300d/
+scratch/
+graphify-out/cache/
+
+
+
+# Local Backups & Runtime Logs
+sd_card_backup/
+*.log
+*.LOG
+liveSDCard/ML/LOGS/archive/
+liveSDCard/ML/LOGS/*.LOG
+liveSDCard/ML/LOGS/*.log
+liveSDCard/ML/SETTINGS/*.CFG
+liveSDCard/ML/SETTINGS/*.cfg
+
+# Compiler & Intermediate Build Artifacts
+*.o
+*.d
+*.map
+*.elf
+*.exe
+*.dll
+*.zip
+*.tar.gz
+*.pyc
+__pycache__/
+
+# OS & Editor Metadata
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+System Volume Information/
+*.html
+debug.JPG

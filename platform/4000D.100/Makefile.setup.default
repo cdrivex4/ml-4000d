@@ -1,0 +1,4 @@
+#Makefile for 4000D
+
+# 4000D_100.sym is too long
+ML_MODULES_SYM_NAME=t100_$(FW_VERSION).sym

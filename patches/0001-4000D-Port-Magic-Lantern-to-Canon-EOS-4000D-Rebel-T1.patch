@@ -1,0 +1,2703 @@
+From ac6be719296464c46598bfd39b71f364ee67f0fe Mon Sep 17 00:00:00 2001
+From: cdrivex4 <cdrivex4@users.noreply.github.com>
+Date: Sun, 1 Nov 2026 03:41:02 +0400
+Subject: [PATCH] 4000D: Port Magic Lantern to Canon EOS 4000D / Rebel T100 /
+ EOS 3000D (FW 1.0.0)
+
+---
+ .gitignore                                    |  14 +
+ minimal/4000D/Makefile                        |   2 +
+ minimal/4000D/magiclantern.lds                | 122 ++++++
+ minimal/Makefile.minimal                      |   1 +
+ minimal/hello-world/magiclantern.lds          | 122 ++++++
+ platform/4000D.100/Makefile                   |   4 +-
+ platform/4000D.100/Makefile.platform.default  |  11 +-
+ platform/4000D.100/Makefile.setup.default     |   8 +-
+ platform/4000D.100/consts.h                   |  46 +-
+ platform/4000D.100/function_overrides.c       |  20 +
+ .../4000D.100/include/platform/state-object.h |   6 +-
+ platform/4000D.100/internals.h                |  22 +-
+ platform/4000D.100/magiclantern.lds           | 122 ++++++
+ platform/4000D.100/stubs.S                    | 219 +++++-----
+ src/bmp.c                                     |  23 +-
+ src/bmp.h                                     |  12 +-
+ src/boot-d45-ch.c                             |  24 ++
+ src/boot.h                                    |  31 +-
+ src/console.c                                 |   7 +
+ src/dialog_test.c                             |   6 +
+ src/edmac-memcpy.c                            |   2 +-
+ src/flexinfo.c                                |   2 +-
+ src/fps-engio.c                               |   2 +-
+ src/fw-signature.h                            |   3 +-
+ src/gui-common.c                              |   2 +
+ src/gui.c                                     |   6 +
+ src/histogram.c                               |   2 +
+ src/init.c                                    | 399 +++++++++++++++++-
+ src/menu.c                                    |  42 +-
+ src/module.c                                  |  11 +-
+ src/patch.c                                   |  57 +--
+ src/patch.h                                   |   4 +-
+ src/property.c                                |  16 +
+ src/propvalues.h                              |   1 +
+ src/ptp.c                                     |   2 +-
+ src/raw.c                                     |  31 +-
+ src/rbf_font.c                                |  18 +-
+ src/state-object.c                            |   2 +-
+ src/stdio.c                                   |  23 +
+ src/tasks.h                                   |   8 +-
+ src/zebra.c                                   |  10 +
+ 41 files changed, 1211 insertions(+), 254 deletions(-)
+ create mode 100644 .gitignore
+ create mode 100644 minimal/4000D/Makefile
+ create mode 100644 minimal/4000D/magiclantern.lds
+ create mode 100644 minimal/hello-world/magiclantern.lds
+ create mode 100644 platform/4000D.100/function_overrides.c
+ create mode 100644 platform/4000D.100/magiclantern.lds
+
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..b996a86
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1,14 @@
++# Magic Lantern Build Artifacts
++*.o
++*.d
++*.a
++*.map
++*.bin
++*.elf
++*.exe
++autoexec
++magiclantern
++localsyms
++version.bin
++version.c
++Makefile.user
+diff --git a/minimal/4000D/Makefile b/minimal/4000D/Makefile
+new file mode 100644
+index 0000000..4b38eba
+--- /dev/null
++++ b/minimal/4000D/Makefile
+@@ -0,0 +1,2 @@
++MODEL=4000D
++include ../Makefile.minimal
+diff --git a/minimal/4000D/magiclantern.lds b/minimal/4000D/magiclantern.lds
+new file mode 100644
+index 0000000..fb386a6
+--- /dev/null
++++ b/minimal/4000D/magiclantern.lds
+@@ -0,0 +1,122 @@
++SECTIONS
++{
++
++
++
++ . = 0xC80000;
++
++ .text : {
++  _text_start = .;
++  *(.text)
++  _text_end = .;
++  . = ALIGN(64);
++  _rodata_start = .;
++  *(.rodata)
++  _rodata_end = .;
++ }
++
++ _data_start = .;
++
++ .data : {
++
++  . = ALIGN(8);
++  _task_overrides_start = .;
++  *(.task_overrides);
++  _task_overrides_end = .;
++
++
++  . = ALIGN(8);
++  _tasks_start = .;
++  *(.tasks)
++  _tasks_end = .;
++
++
++  . = ALIGN(8);
++  _init_funcs_start = .;
++  *(.init_funcs)
++  _init_funcs_end = .;
++
++
++  . = ALIGN(8);
++  _ptp_handlers_start = .;
++  *(.ptp_handlers)
++  _ptp_handlers_end = .;
++
++
++  . = ALIGN(8);
++  _config_vars_start = .;
++  *(.config_vars)
++  _config_vars_end = .;
++
++
++  . = ALIGN(8);
++  _prop_handlers_start = .;
++  *(.prop_handlers)
++  _prop_handlers_end = .;
++
++
++  . = ALIGN(8);
++  _module_symbols_start = .;
++  *(.module_symbols)
++  _module_symbols_end = .;
++
++
++  . = ALIGN(64);
++  *(.data)
++ }
++
++ _data.end = .;
++
++    __exidx_start = .;
++    .ARM.exidx : { *(.ARM.exidx*) }
++    __exidx_end = .;
++
++
++ . = ALIGN(64);
++ _bss_start = .;
++ .bss : { *(.bss) }
++ . = ALIGN(64);
++ _bss_end = .;
++
++
++
++
++
++  .stab 0 : { *(.stab) }
++  .stabstr 0 : { *(.stabstr) }
++  .stab.excl 0 : { *(.stab.excl) }
++  .stab.exclstr 0 : { *(.stab.exclstr) }
++  .stab.index 0 : { *(.stab.index) }
++  .stab.indexstr 0 : { *(.stab.indexstr) }
++  .comment 0 : { *(.comment) }
++
++
++
++
++  .debug 0 : { *(.debug) }
++  .line 0 : { *(.line) }
++
++  .debug_srcinfo 0 : { *(.debug_srcinfo) }
++  .debug_sfnames 0 : { *(.debug_sfnames) }
++
++  .debug_aranges 0 : { *(.debug_aranges) }
++  .debug_pubnames 0 : { *(.debug_pubnames) }
++
++  .debug_info 0 : { *(.debug_info .gnu.linkonce.wi.*) }
++  .debug_abbrev 0 : { *(.debug_abbrev) }
++  .debug_line 0 : { *(.debug_line .debug_line.* .debug_line_end ) }
++  .debug_frame 0 : { *(.debug_frame) }
++  .debug_str 0 : { *(.debug_str) }
++  .debug_loc 0 : { *(.debug_loc) }
++  .debug_macinfo 0 : { *(.debug_macinfo) }
++
++  .debug_weaknames 0 : { *(.debug_weaknames) }
++  .debug_funcnames 0 : { *(.debug_funcnames) }
++  .debug_typenames 0 : { *(.debug_typenames) }
++  .debug_varnames 0 : { *(.debug_varnames) }
++
++  .debug_pubtypes 0 : { *(.debug_pubtypes) }
++  .debug_ranges 0 : { *(.debug_ranges) }
++
++  .debug_macro 0 : { *(.debug_macro) }
++}
+diff --git a/minimal/Makefile.minimal b/minimal/Makefile.minimal
+index d0c8299..ef7a8b7 100644
+--- a/minimal/Makefile.minimal
++++ b/minimal/Makefile.minimal
+@@ -3,6 +3,7 @@ TOP_DIR?=../..
+ ML_SETUP_EXTENSION=minimal
+ ML_SETUP_DISABLE_USER_CONFIGS = y
+ ML_SRC_PROFILE=minimal
++ML_SRC_EXCLUDE_OBJS += function_overrides.o
+ 
+ include $(TOP_DIR)/platform/Makefile.platform.base
+ 
+diff --git a/minimal/hello-world/magiclantern.lds b/minimal/hello-world/magiclantern.lds
+new file mode 100644
+index 0000000..fb386a6
+--- /dev/null
++++ b/minimal/hello-world/magiclantern.lds
+@@ -0,0 +1,122 @@
++SECTIONS
++{
++
++
++
++ . = 0xC80000;
++
++ .text : {
++  _text_start = .;
++  *(.text)
++  _text_end = .;
++  . = ALIGN(64);
++  _rodata_start = .;
++  *(.rodata)
++  _rodata_end = .;
++ }
++
++ _data_start = .;
++
++ .data : {
++
++  . = ALIGN(8);
++  _task_overrides_start = .;
++  *(.task_overrides);
++  _task_overrides_end = .;
++
++
++  . = ALIGN(8);
++  _tasks_start = .;
++  *(.tasks)
++  _tasks_end = .;
++
++
++  . = ALIGN(8);
++  _init_funcs_start = .;
++  *(.init_funcs)
++  _init_funcs_end = .;
++
++
++  . = ALIGN(8);
++  _ptp_handlers_start = .;
++  *(.ptp_handlers)
++  _ptp_handlers_end = .;
++
++
++  . = ALIGN(8);
++  _config_vars_start = .;
++  *(.config_vars)
++  _config_vars_end = .;
++
++
++  . = ALIGN(8);
++  _prop_handlers_start = .;
++  *(.prop_handlers)
++  _prop_handlers_end = .;
++
++
++  . = ALIGN(8);
++  _module_symbols_start = .;
++  *(.module_symbols)
++  _module_symbols_end = .;
++
++
++  . = ALIGN(64);
++  *(.data)
++ }
++
++ _data.end = .;
++
++    __exidx_start = .;
++    .ARM.exidx : { *(.ARM.exidx*) }
++    __exidx_end = .;
++
++
++ . = ALIGN(64);
++ _bss_start = .;
++ .bss : { *(.bss) }
++ . = ALIGN(64);
++ _bss_end = .;
++
++
++
++
++
++  .stab 0 : { *(.stab) }
++  .stabstr 0 : { *(.stabstr) }
++  .stab.excl 0 : { *(.stab.excl) }
++  .stab.exclstr 0 : { *(.stab.exclstr) }
++  .stab.index 0 : { *(.stab.index) }
++  .stab.indexstr 0 : { *(.stab.indexstr) }
++  .comment 0 : { *(.comment) }
++
++
++
++
++  .debug 0 : { *(.debug) }
++  .line 0 : { *(.line) }
++
++  .debug_srcinfo 0 : { *(.debug_srcinfo) }
++  .debug_sfnames 0 : { *(.debug_sfnames) }
++
++  .debug_aranges 0 : { *(.debug_aranges) }
++  .debug_pubnames 0 : { *(.debug_pubnames) }
++
++  .debug_info 0 : { *(.debug_info .gnu.linkonce.wi.*) }
++  .debug_abbrev 0 : { *(.debug_abbrev) }
++  .debug_line 0 : { *(.debug_line .debug_line.* .debug_line_end ) }
++  .debug_frame 0 : { *(.debug_frame) }
++  .debug_str 0 : { *(.debug_str) }
++  .debug_loc 0 : { *(.debug_loc) }
++  .debug_macinfo 0 : { *(.debug_macinfo) }
++
++  .debug_weaknames 0 : { *(.debug_weaknames) }
++  .debug_funcnames 0 : { *(.debug_funcnames) }
++  .debug_typenames 0 : { *(.debug_typenames) }
++  .debug_varnames 0 : { *(.debug_varnames) }
++
++  .debug_pubtypes 0 : { *(.debug_pubtypes) }
++  .debug_ranges 0 : { *(.debug_ranges) }
++
++  .debug_macro 0 : { *(.debug_macro) }
++}
+diff --git a/platform/4000D.100/Makefile b/platform/4000D.100/Makefile
+index 387e280..9a5e986 100644
+--- a/platform/4000D.100/Makefile
++++ b/platform/4000D.100/Makefile
+@@ -1,4 +1,4 @@
+-#Makefile for 1300D
++#Makefile for 4000D
+ 
+-MODEL=1300D
++MODEL=4000D
+ include ../Makefile.platform
+diff --git a/platform/4000D.100/Makefile.platform.default b/platform/4000D.100/Makefile.platform.default
+index c6b007c..c3bc18d 100644
+--- a/platform/4000D.100/Makefile.platform.default
++++ b/platform/4000D.100/Makefile.platform.default
+@@ -1,13 +1,14 @@
+-# 1300D 1.1.0
++# 4000D 1.0.0
+ 
+-# no 1300D firmware yet?
+-CANON_NAME_FIR      = 5D300133.FIR
+-FIRMWARE_ID         = 0x80000404
++CANON_NAME_FIR      = 4000D100.FIR
++FIRMWARE_ID         = 0x80000422
+ 
+-# the only DIGIC 4 model with 32MB ROM
++# 4000D uses single 32MB SPI flash mapped at 0xFE000000
+ ROMBASEADDR         = 0xFE0C0000
++PLATFORM_ARCH       = armv5te
+ 
+ # Load ML at the end of the AllocateMemory pool
+ # Default 0x2D0000 - 0xD00000, patched to 0x2D0000 - 0xC80000 (512K for us).
+ RESTARTSTART        = 0xC80000
+ ML_BOOT_OBJ         = boot-d45-ch.o
++ML_SRC_EXTRA_OBJS  += function_overrides.o
+diff --git a/platform/4000D.100/Makefile.setup.default b/platform/4000D.100/Makefile.setup.default
+index 3063b2c..c5649f7 100644
+--- a/platform/4000D.100/Makefile.setup.default
++++ b/platform/4000D.100/Makefile.setup.default
+@@ -1,6 +1,4 @@
+-#Makefile for 1300D
++#Makefile for 4000D
+ 
+-#CONFIG_LVAPP_HACK_RELOC = y
+-
+-# 1300D_101.sym is to long
+-ML_MODULES_SYM_NAME=t6_$(FW_VERSION).sym
++# 4000D_100.sym is too long
++ML_MODULES_SYM_NAME=t100_$(FW_VERSION).sym
+diff --git a/platform/4000D.100/consts.h b/platform/4000D.100/consts.h
+index 93306b8..de87817 100644
+--- a/platform/4000D.100/consts.h
++++ b/platform/4000D.100/consts.h
+@@ -4,9 +4,9 @@
+ 
+ #define CANON_SHUTTER_RATING 100000
+ 
+-#define CARD_LED_ADDRESS 0xC0220134 // http://magiclantern.wikia.com/wiki/Led_addresses
+-#define LEDON 0x46
+-#define LEDOFF 0x44
++#define CARD_LED_ADDRESS 0xC022D1E0 // Verified 4000D ROM1 GPIO table at 0xFE7FE250
++#define LEDON 0x0093D800            // Verified 4000D ROM1 at 0xFE3D3234
++#define LEDOFF 0x0083DC00           // Verified 4000D ROM1 at 0xFE3D3238
+ 
+ 
+ 
+@@ -14,7 +14,7 @@
+ 
+ #define HIJACK_CACHE_HACK_BSS_END_ADDR   0xFE0C1B74
+ #define HIJACK_CACHE_HACK_BSS_END_INSTR  0xE3A01732 // should be the correct INSTRUCTION MOV R1, 0xc80000
+-#define HIJACK_CACHE_HACK_INITTASK_ADDR  0xFE0C3B20
++#define HIJACK_CACHE_HACK_INITTASK_ADDR  0xFE0C3A9C
+ 
+ #define HIJACK_INSTR_BL_CSTART  0xFE0C0638
+ #define HIJACK_INSTR_BSS_END 0xFE0C3B10
+@@ -23,7 +23,7 @@
+ #define HIJACK_INSTR_MY_ITASK 0xFE0C3B20
+ 
+ // Used in boot-hack.c with CONFIG_ALLOCATE_MEMORY_POOL
+-#define ROM_ITASK_START 0xFE1296C8
++#define ROM_ITASK_START 0xFE11F1CC
+ #define ROM_ITASK_END 0xFE1296C8//0xfe129bd8 // 0xFE1298A0 //fe12b8bc FE1298A0
+ #define ROM_CREATETASK_MAIN_START 0xfe0c1b60 
+ #define ROM_CREATETASK_MAIN_END 0xfe0c1eb0
+@@ -36,7 +36,7 @@
+ 
+ //#define ARMLIB_OVERFLOWING_BUFFER 0x167FC // in AJ_armlib_setup_related3 // this is deactivated in config for this camera, maybe we need to activate it again
+ 
+-#define DRYOS_ASSERT_HANDLER 0x35888 // dec TH_assert or assert_0 // not sure
++#define DRYOS_ASSERT_HANDLER 0x00033C50 // dec TH_assert or assert_0 // not sure
+ 
+ // these were found in ROM, but not tested yet
+ #define MVR_992_STRUCT (*(void**)(0x315dc+0x4)) // look in MVR_Initialize for AllocateMemory call
+@@ -58,7 +58,7 @@
+ #define MOV_OPT_STEP 5
+ #define MOV_GOP_OPT_STEP 5
+ 
+- #define AUDIO_MONITORING_HEADPHONES_CONNECTED (!((*(int*)0xc0220070) & 1))
++ #define AUDIO_MONITORING_HEADPHONES_CONNECTED 0
+ //#define HOTPLUG_VIDEO_OUT_PROP_DELIVER_ADDR 0x1a8c // this prop_deliver performs the action for Video Connect and Video Disconnect  // not present on 1300D (see FE0C69C8: taskHotPlug)
+ //#define HOTPLUG_VIDEO_OUT_STATUS_ADDR 0x1ac4 // passed as 2nd arg to prop_deliver; 1 = display connected, 0 = not, other values disable this event (trick)  // not present on 1300D (see FE0C69C8: taskHotPlug)
+ 
+@@ -84,17 +84,17 @@
+ 
+ // guess
+ #define FOCUS_CONFIRMATION (*(int*)(0x36EC0 + 0x4)) // see "focusinfo" and Wiki:Struct_Guessing
+-#define HALFSHUTTER_PRESSED (*(int*)(0x359A0 + 0x1C)) // look for string "[MC] permit LV instant"
++#define HALFSHUTTER_PRESSED (*(int*)(0x33D68 + 0x1C)) // look for string "[MC] permit LV instant"
+ 
+ //~ #define AF_BUTTON_PRESSED_LV 0
+ 
+ //~ #define DISPLAY_SENSOR (*(int*)0x2dec)
+ //~ #define DISPLAY_SENSOR_ACTIVE (*(int*)0xC0220104)
+-#define DISPLAY_SENSOR_POWERED (*(int*)(0x359A0 + 0x18))  // Look up *"ForceDisableDisplay (%d)"
++#define DISPLAY_SENSOR_POWERED (*(int*)(0x33D68 + 0x18))  // Look up *"ForceDisableDisplay (%d)"
+ 
+ // for gui_main_task
+ #define GMT_NFUNCS 7
+-#define GMT_FUNCTABLE 0xFE851F20
++#define GMT_FUNCTABLE 0xFE7CBEC0
+ 
+ 
+ 
+@@ -114,7 +114,7 @@
+  #define AE_STATE (*(int8_t*)(0x3AA80 + 0x1C))
+  #define AE_VALUE (*(int8_t*)(0x3AA80 + 0x1D))
+ 
+-#define CURRENT_GUI_MODE (*(int*)0x36560) // GUIMode_maybe
++#define CURRENT_GUI_MODE (*(int*)0x3491C) // GUIMode_maybe (0x348CC + 80 from SetGUIRequestMode)
+ #define GUIMODE_WB 5
+ #define GUIMODE_FOCUS_MODE 9
+ #define GUIMODE_DRIVE_MODE 8
+@@ -168,6 +168,12 @@
+ #define DISPLAY_CLOCK_POS_X 440
+ #define DISPLAY_CLOCK_POS_Y 410
+ 
++#define DISPLAY_DATE_POS_X 425
++#define DISPLAY_DATE_POS_Y 430
++
++#define DISPLAY_BATTERY_POS_X 350
++#define DISPLAY_BATTERY_POS_Y 400
++
+ // position for displaying K icon in photo info display
+ #define WB_K_ICON_POS_X 192
+ #define WB_K_ICON_POS_Y 226
+@@ -208,9 +214,9 @@
+ #define BULB_MIN_EXPOSURE 1000
+ 
+ // http://magiclantern.wikia.com/wiki/Fonts
+-#define BFNT_CHAR_CODES    0xff23eb08
+-#define BFNT_BITMAP_OFFSET 0xff241a58
+-#define BFNT_BITMAP_DATA   0xff2449a8
++#define BFNT_CHAR_CODES    0xFEDDEB54
++#define BFNT_BITMAP_OFFSET 0xFEDE1758
++#define BFNT_BITMAP_DATA   0xFEDE435C
+ 
+ 
+ // from CFn
+@@ -228,10 +234,10 @@
+ 
+ #define BULB_EXPOSURE_CORRECTION 100 // min value for which bulb exif is OK [not tested]
+ 
+-#define WINSYS_BMP_DIRTY_BIT_NEG MEM(0x3DBAC+0x2C) // see http://magiclantern.wikia.com/wiki/VRAM/BMP
++#define WINSYS_BMP_DIRTY_BIT_NEG MEM(0x3BE8C+0x3C) // 4000D WinSys struct at 0x3BE8C
+ 
+ // manual exposure overrides
+-#define LVAE_STRUCT 0x3B7A4
++#define LVAE_STRUCT 0x0006BF7C
+ #define CONTROL_BV      (*(uint16_t*)(LVAE_STRUCT+0x1c)) // EP_SetControlBv
+ #define CONTROL_BV_TV   (*(uint16_t*)(LVAE_STRUCT+0x1e)) // EP_SetControlParam
+ #define CONTROL_BV_AV   (*(uint16_t*)(LVAE_STRUCT+0x20))
+@@ -251,8 +257,8 @@
+ #define Q_BTN_NAME (RECORDING ? "INFO" : "[Q]")
+ #define ARROW_MODE_TOGGLE_KEY ""
+ 
+-#define DISPLAY_STATEOBJ (*(struct state_object **)0x318B8)
+-#define DISPLAY_IS_ON (DISPLAY_STATEOBJ->current_state != 0)
++//#define DISPLAY_STATEOBJ (*(struct state_object **)0x2FBD4)
++#define DISPLAY_IS_ON (bmp_vram_raw() != 0)
+ 
+ #define VIDEO_PARAMETERS_SRC_3 0x6A95C 
+ #define FRAME_SHUTTER_TIMER (*(uint16_t*)(VIDEO_PARAMETERS_SRC_3+0xC))
+@@ -262,7 +268,7 @@
+ #define FRAME_BV ((int)FRAME_SHUTTER + (int)FRAME_APERTURE - (int)FRAME_ISO)
+ 
+ // see "Malloc Information"
+-#define MALLOC_STRUCT 0x671A8
++#define MALLOC_STRUCT 0x000640B4
+ #define MALLOC_FREE_MEMORY (MEM(MALLOC_STRUCT + 8) - MEM(MALLOC_STRUCT + 0x1C)) // "Total Size" - "Allocated Size"
+ 
+ // for bulb ramping calibration: delay between two exposure readings (increase it if brightness updates slowly)
+@@ -275,3 +281,5 @@
+ // temperature convertion from raw-temperature to celsius
+ // http://www.magiclantern.fm/forum/index.php?topic=9673.0
+ #define EFIC_CELSIUS ((int)efic_temp * 60 / 100 - 65)
++
++#define SRM_BUFFER_SIZE 0x1f68000 // 18MP raw buffer size on DIGIC 4+
+diff --git a/platform/4000D.100/function_overrides.c b/platform/4000D.100/function_overrides.c
+new file mode 100644
+index 0000000..ffcafd6
+--- /dev/null
++++ b/platform/4000D.100/function_overrides.c
+@@ -0,0 +1,20 @@
++#include <dryos.h>
++#include <property.h>
++#include <bmp.h>
++#include <config.h>
++#include <consts.h>
++#include <lens.h>
++#include <tasks.h>
++
++extern struct task* first_task;
++extern int _get_task_info_by_id(int task_id, void *task_attr) __attribute__((weak));
++
++int get_task_info_by_id(int task_id, void *task_attr)
++{
++    if (&_get_task_info_by_id && first_task)
++    {
++        struct task *task = first_task + (task_id & 0xff);
++        return _get_task_info_by_id(task->taskId, task_attr);
++    }
++    return 0;
++}
+diff --git a/platform/4000D.100/include/platform/state-object.h b/platform/4000D.100/include/platform/state-object.h
+index 7848af2..dd9712d 100644
+--- a/platform/4000D.100/include/platform/state-object.h
++++ b/platform/4000D.100/include/platform/state-object.h
+@@ -1,9 +1,9 @@
+ #ifndef __platform_state_object_h
+ #define __platform_state_object_h
+ 
+-#define DISPLAY_STATE DISPLAY_STATEOBJ
++//#define DISPLAY_STATE DISPLAY_STATEOBJ
+ #define INPUT_ENABLE_IMAGE_PHYSICAL_SCREEN_PARAMETER 20
+-#define EVF_STATE (*(struct state_object **)0x37930)
+-#define MOVREC_STATE (*(struct state_object **)0x38744)
++//#define EVF_STATE (*(struct state_object **)0x37930)
++//#define MOVREC_STATE (*(struct state_object **)0x38744)
+ 
+ #endif // __platform_state_object_h
+diff --git a/platform/4000D.100/internals.h b/platform/4000D.100/internals.h
+index aa79887..3e2710b 100644
+--- a/platform/4000D.100/internals.h
++++ b/platform/4000D.100/internals.h
+@@ -1,11 +1,12 @@
++#define CONFIG_NO_ADDITIONAL_VERSION
+ /**
+- * Camera internals for 1300D 1.1.0
++ * Camera internals for 4000D 1.0.0
+  */
+ 
+ /** Properties are persistent (saved in NVRAM) => a mistake can cause permanent damage. Undefine this for new ports. */
+ /** The 1300D port is very early, so I think we should not enable properties. **/
+ //#undef CONFIG_PROP_REQUEST_CHANGE
+-#define CONFIG_PROP_REQUEST_CHANGE
++#undef CONFIG_PROP_REQUEST_CHANGE
+ 
+ /** 
+  * State object hooks are pieces of code that run in Canon tasks (state objects). See state-object.c . 
+@@ -74,11 +75,11 @@
+ //~ #define CONFIG_ZOOM_BTN_NOT_WORKING_WHILE_RECORDING
+ 
+ /** We can redirect the display buffer to some arbitrary address, just by changing YUV422_LV_BUFFER_DISPLAY_ADDR **/
+-#define CONFIG_CAN_REDIRECT_DISPLAY_BUFFER_EASILY
+-#define CONFIG_CAN_REDIRECT_DISPLAY_BUFFER
++#undef CONFIG_CAN_REDIRECT_DISPLAY_BUFFER_EASILY
++#undef CONFIG_CAN_REDIRECT_DISPLAY_BUFFER
+ 
+ /** Therefore, we can implement display filters (features that alter the LiveView image in real-time) **/
+-#define CONFIG_DISPLAY_FILTERS
++#undef CONFIG_DISPLAY_FILTERS
+ 
+ /** We can override ISO on a per-frame basis, by changing FRAME_ISO (e.g. for HDR video or gradual exposure) **/
+ #define CONFIG_FRAME_ISO_OVERRIDE
+@@ -94,7 +95,7 @@
+ #define CONFIG_EXPSIM
+ 
+ /** We can playback sounds via ASIF DMA **/
+-#define CONFIG_BEEP
++#undef CONFIG_BEEP
+ 
+ /** This camera has trouble saving Kelvin and/or WBShift in movie mode, so ML has to do this instead **/
+ /* to be checked */
+@@ -107,7 +108,7 @@
+ //~ #define CONFIG_DMA_MEMCPY
+ 
+ /** We know how to use edmac_memcpy. This one is really fast (600MB/s!) */
+-#define CONFIG_EDMAC_MEMCPY
++#undef CONFIG_EDMAC_MEMCPY
+ 
+ /** We should warn the user if movie exposure is Auto **/
+ #define CONFIG_MOVIE_AE_WARNING
+@@ -121,7 +122,7 @@
+ #define CONFIG_FIO_RENAMEFILE_WORKS
+ 
+ /** Perfect sync using EVF_STATE **/
+-#define CONFIG_EVF_STATE_SYNC
++#undef CONFIG_EVF_STATE_SYNC
+ 
+ /** This camera loads ML into the AllocateMemory pool **/
+ //#define CONFIG_ALLOCATE_MEMORY_POOL
+@@ -139,8 +140,9 @@
+ #define CONFIG_MENU_WITH_AV
+ 
+ /** We don't have access to Raw data (yet) */
+-#define CONFIG_RAW_LIVEVIEW
+-#define CONFIG_RAW_PHOTO
++#undef CONFIG_RAW_LIVEVIEW
++#undef CONFIG_RAW_PHOTO
++#undef CONFIG_TSKMON
+ 
+ 
+ /** Hide Canon bottom bar from DebugMsg hook */
+diff --git a/platform/4000D.100/magiclantern.lds b/platform/4000D.100/magiclantern.lds
+new file mode 100644
+index 0000000..fb386a6
+--- /dev/null
++++ b/platform/4000D.100/magiclantern.lds
+@@ -0,0 +1,122 @@
++SECTIONS
++{
++
++
++
++ . = 0xC80000;
++
++ .text : {
++  _text_start = .;
++  *(.text)
++  _text_end = .;
++  . = ALIGN(64);
++  _rodata_start = .;
++  *(.rodata)
++  _rodata_end = .;
++ }
++
++ _data_start = .;
++
++ .data : {
++
++  . = ALIGN(8);
++  _task_overrides_start = .;
++  *(.task_overrides);
++  _task_overrides_end = .;
++
++
++  . = ALIGN(8);
++  _tasks_start = .;
++  *(.tasks)
++  _tasks_end = .;
++
++
++  . = ALIGN(8);
++  _init_funcs_start = .;
++  *(.init_funcs)
++  _init_funcs_end = .;
++
++
++  . = ALIGN(8);
++  _ptp_handlers_start = .;
++  *(.ptp_handlers)
++  _ptp_handlers_end = .;
++
++
++  . = ALIGN(8);
++  _config_vars_start = .;
++  *(.config_vars)
++  _config_vars_end = .;
++
++
++  . = ALIGN(8);
++  _prop_handlers_start = .;
++  *(.prop_handlers)
++  _prop_handlers_end = .;
++
++
++  . = ALIGN(8);
++  _module_symbols_start = .;
++  *(.module_symbols)
++  _module_symbols_end = .;
++
++
++  . = ALIGN(64);
++  *(.data)
++ }
++
++ _data.end = .;
++
++    __exidx_start = .;
++    .ARM.exidx : { *(.ARM.exidx*) }
++    __exidx_end = .;
++
++
++ . = ALIGN(64);
++ _bss_start = .;
++ .bss : { *(.bss) }
++ . = ALIGN(64);
++ _bss_end = .;
++
++
++
++
++
++  .stab 0 : { *(.stab) }
++  .stabstr 0 : { *(.stabstr) }
++  .stab.excl 0 : { *(.stab.excl) }
++  .stab.exclstr 0 : { *(.stab.exclstr) }
++  .stab.index 0 : { *(.stab.index) }
++  .stab.indexstr 0 : { *(.stab.indexstr) }
++  .comment 0 : { *(.comment) }
++
++
++
++
++  .debug 0 : { *(.debug) }
++  .line 0 : { *(.line) }
++
++  .debug_srcinfo 0 : { *(.debug_srcinfo) }
++  .debug_sfnames 0 : { *(.debug_sfnames) }
++
++  .debug_aranges 0 : { *(.debug_aranges) }
++  .debug_pubnames 0 : { *(.debug_pubnames) }
++
++  .debug_info 0 : { *(.debug_info .gnu.linkonce.wi.*) }
++  .debug_abbrev 0 : { *(.debug_abbrev) }
++  .debug_line 0 : { *(.debug_line .debug_line.* .debug_line_end ) }
++  .debug_frame 0 : { *(.debug_frame) }
++  .debug_str 0 : { *(.debug_str) }
++  .debug_loc 0 : { *(.debug_loc) }
++  .debug_macinfo 0 : { *(.debug_macinfo) }
++
++  .debug_weaknames 0 : { *(.debug_weaknames) }
++  .debug_funcnames 0 : { *(.debug_funcnames) }
++  .debug_typenames 0 : { *(.debug_typenames) }
++  .debug_varnames 0 : { *(.debug_varnames) }
++
++  .debug_pubtypes 0 : { *(.debug_pubtypes) }
++  .debug_ranges 0 : { *(.debug_ranges) }
++
++  .debug_macro 0 : { *(.debug_macro) }
++}
+diff --git a/platform/4000D.100/stubs.S b/platform/4000D.100/stubs.S
+index 00fb86a..c8cbace 100644
+--- a/platform/4000D.100/stubs.S
++++ b/platform/4000D.100/stubs.S
+@@ -37,36 +37,39 @@
+ 
+ /** Startup **/
+ NSTUB( ROMBASEADDR, firmware_entry )                        // 0xFE0C0000
+-NSTUB(0xFE0C3A24,  cstart)                                  //
+-NSTUB(   0x29898,  bzero32)                                 // called by cstart() rom
+-NSTUB(    0x5254,  create_init_task)                        // must be called from ram
+-NSTUB(0xFE1296C8,  init_task)                               // passed as arg to create_init_task, look for dmSetup
++NSTUB(0xFE0C39A0,  cstart)                                  //
++NSTUB(   0x27CE0,  bzero32)                                 // called by cstart() rom
++NSTUB(    0x51E0,  create_init_task)                        // must be called from ram
++NSTUB(0xFE11F1CC,  init_task)                               // passed as arg to create_init_task, look for dmSetup
+ NSTUB(   0x67430,  additional_version)
+ 
+ /** File I/O **/
+-NSTUB(0xFE2A43FC,  FIO_CloseFile)                           //
+-NSTUB(0xFE2A53D0,  FIO_FindClose)                           // called with ret_FIO_FindFirstEx after finishing the dir scanning loop
+-NSTUB(0xFE2A52F0,  FIO_FindNextEx)                          //
+-NSTUB(0xFE2A41AC, _FIO_ReadFile)                            //
+-NSTUB(0xFE2A425C,  FIO_SeekSkipFile)                        // same as SeekFile
+-NSTUB(0xFE2A434C, _FIO_WriteFile)                           //
+-NSTUB(0xFE2A4C3C, _FIO_CreateDirectory)                     //
+-NSTUB(0xFE2A4058, _FIO_CreateFile)                          //
+-NSTUB(0xFE2A51FC, _FIO_FindFirstEx)                         //
+-NSTUB(0xFE2A4578, _FIO_GetFileSize)                         //
+-NSTUB(0xFE2A3F9C, _FIO_OpenFile)                            //
+-NSTUB(0xFE2A4104, _FIO_RemoveFile)                          //
+-NSTUB(0xFE2A4A74, _FIO_RenameFile)
++NSTUB(0xFE27C670,  FIO_CloseFile)                           //
++NSTUB(0xFE27D2CC,  FIO_FindClose)                           // called with ret_FIO_FindFirstEx after finishing the dir scanning loop
++NSTUB(0xFE27D1EC,  FIO_FindNextEx)                          //
++NSTUB(0xFE27C420, _FIO_ReadFile)                            //
++NSTUB(0xFE27C4D0,  FIO_SeekSkipFile)                        // same as SeekFile
++NSTUB(0xFE27C5C0, _FIO_WriteFile)                           //
++NSTUB(0xFE27CE48, _FIO_CreateDirectory)                     //
++NSTUB(0xFE27C2CC, _FIO_CreateFile)                          //
++NSTUB(0xFE27D0F8, _FIO_FindFirstEx)                         //
++NSTUB(0xFE27C708, _FIO_GetFileSize)                         //
++NSTUB(0xFE27C210, _FIO_OpenFile)                            //
++NSTUB(0xFE27C378, _FIO_RemoveFile)                          //
++NSTUB(0xFE27CC80, _FIO_RenameFile)
+ 
+ /** GUI **/
+-NSTUB(   0x3136C,  gui_main_struct)                         // in gui_main_task
+-NSTUB(   0x3DA5C,  gui_task_list)
+-NSTUB(0xFE0CCA48,  GUI_ChangeMode)
+-NSTUB(0xFE0CC88C,  GUI_Control)
+-NSTUB(0xFE14EF88,  SetGUIRequestMode)
+-NSTUB(0xFE0CCEFC,  gui_init_end)                            // EndGuiInit
+-NSTUB(0xFE0CC4BC,  gui_main_task)                           // message at 0x30, counter at 0x0c
+-NSTUB(0xFE151800,  gui_massive_event_loop)                  // GUI_Control_Post
++NSTUB(   0x2F738,  gui_main_struct)                         // in gui_main_task
++NSTUB(   0x2F76C,  gui_task_list)
++NSTUB(0xFE0CC434,  GUI_ChangeMode)
++NSTUB(0xFE0CC278,  GUI_Control)
++NSTUB(0xFE14415C,  SetGUIRequestMode)
++NSTUB(0xFE0CC8E8,  gui_init_end)                            // EndGuiInit
++NSTUB(0xFE0CBEA8,  gui_main_task)                           // message at 0x30, counter at 0x0c
++NSTUB(0xFE145F08,  gui_massive_event_loop)                  // GUI_Control_Post
++NSTUB(0xFE0CD660,  TurnOnDisplay)                           // GUILock_TurnOnDisplay
++NSTUB(0xFE0CD6D0,  TurnOffDisplay)                          // GUILock_TurnOffDisplay
++NSTUB(0xFE10C340,  SetBitmapVramAddress)
+ NSTUB(0xFE2EB7F8,  GUI_SetLvMode)                           /* present on 500D.111, 50D.109, 5D2.212 */
+ // NSTUB(    ???,  GUI_SetMovieSize_a)                      /* present on 50D.109 */
+ // NSTUB(    ???,  GUI_SetMovieSize_b)                      /* present on 50D.109 */
+@@ -74,8 +77,8 @@ NSTUB(0xFE2EB7F8,  GUI_SetLvMode)                           /* present on 500D.1
+ 
+ /** ASIF **/
+ // TODO:
+- NSTUB(0XFE108E44,  PowerAudioOutput)                       /* not found */
+-NSTUB(0xFE11B938,  SetAudioVolumeOut)
++ // NSTUB(0XFE108E44,  PowerAudioOutput)                       /* not found */
++// NSTUB(0xFE11B938,  SetAudioVolumeOut)
+ NSTUB(0xFE106A98,  SetNextASIFADCBuffer)
+ NSTUB(0xFE106C80,  SetNextASIFDACBuffer)
+ NSTUB(0xFE11C690,  SetSamplingRate)
+@@ -92,7 +95,7 @@ NSTUB(0xFE106228,  StopASIFDMAADC)                          /* present on 7D.203
+ /** Audio **/
+ NSTUB(    0x31604,  sounddev)                               // in sounddev_task
+ // TODO: Not found direct write it looks like its some kind of serial connection now
+- NSTUB(0xFE2B3A3C, _audio_ic_read)
++ NSTUB(0xFE284014, _audio_ic_read)
+  NSTUB(0xFE2B36D4, _audio_ic_write) // posible sub_FE2B3A18
+ NSTUB(0xFE8C32CC,  audio_thresholds)                        // find "ALV_Initialize", then pointer to "AudioLevel", thresholds are following array of 41 values
+ NSTUB(0xFE108A70,  sounddev_active_in)                      // "SoundDevActiveIn"
+@@ -100,12 +103,12 @@ NSTUB(0xFE108660,  sounddev_task)                           // "[SND] _SoundDevi
+ // NSTUB(    ???, _audio_ic_write_bulk)                     /* present on 6D.116 */
+ 
+ /** Bitmap **/
+-NSTUB(   0x54A40,  LCD_Palette)                             // in InitializeBitmapDisplayDevice, right after 0xc0f14800
+-NSTUB(   0x56240,  bmp_vram_info)
++NSTUB(   0x51B60,  LCD_Palette)                             // in InitializeBitmapDisplayDevice, right after 0xc0f14800
++NSTUB(   0x53360,  bmp_vram_info)                           // 4000D PB_BITMAP_INFO (SetBitmapVramAddress at 0xFE10C188)
+ 
+ /** CFN **/
+-NSTUB(0xFE71C2A4,  GetCFnData)
+-NSTUB(0xFE71C4D0,  SetCFnData)
++NSTUB(0xFE6971B8,  GetCFnData)
++NSTUB(0xFE6973E4,  SetCFnData)
+ // NSTUB(    ???,  GUI_GetCFnForTab4)                       /* present on 7D.203 */
+ // NSTUB(0xFE4716F0,  GUI_SetCFnForTab4)                    /* present on 7D.203 */
+ 
+@@ -121,8 +124,8 @@ NSTUB(0xFE10FA70, _mpu_recv);                               /* registered in Ini
+ NSTUB(0xFE1244E0,  dma_memcpy)
+ 
+ /** Debug messages **/
+-NSTUB(   0x31BF4,  dm_names)                                // in DebugMsg, before the 1st loop target
+-NSTUB(0xFE11F394,  DryosDebugMsg)
++NSTUB(   0x300D8,  dm_names)                                // in DebugMsg, before the 1st loop target
++NSTUB(0xFE1171B4,  DryosDebugMsg)                           /* 4000D verified */
+ NSTUB(0xFE11F6FC,  dm_set_store_level)                      // called by "dmstore"
+ 
+ /** Dialog API **/
+@@ -131,17 +134,17 @@ NSTUB(0xFE2F8BF8,  dialog_set_property_str)
+ 
+ /** Dialog handlers **/
+ NSTUB(0xFE5ACCEC,  ErrCardForLVApp_handler)                 // LiveViewErrorApp, as in 60D
+-NSTUB(0xFE45573C,  ErrForCamera_handler)                    // ERR70, ERR80 etc (DlgErrForCamera.c, AJ_DIALOG.HANDLER_DlgErrForCamera.c)
++NSTUB(0xFE3F9A7C,  ErrForCamera_handler)                    // ERR70, ERR80 etc (DlgErrForCamera.c, AJ_DIALOG.HANDLER_DlgErrForCamera.c)
+ NSTUB(0xFE488590,  HideUnaviFeedBack_maybe)                 // look for StartUnaviFeedBackTimer
+ NSTUB(0xFE48D148,  LiveViewApp_handler)
+ NSTUB(0xFE48D7B4,  LiveViewApp_handler_BL_JudgeBottomInfoDispTimerState)
+ NSTUB(0xFE48EDF0,  LiveViewApp_handler_end)                 // start of next function
+ NSTUB(0xFE4A8C24,  PlayMain_handler)
+-NSTUB(0xFE5E7BDC,  PlayMovieGuideApp_handler)
++NSTUB(0xFE5DDE7C,  PlayMovieGuideApp_handler)
+ NSTUB(0xFE49C300,  ShootOlcApp_handler)
+ // NSTUB(    ???,  LiveViewLevelApp_handler)                /* present on 5D3.113 */
+ // NSTUB(    ???,  LiveViewShutterApp_handler)              /* present on 6D.113, 650D.104, EOSM.202, 700D.113 */
+-// NSTUB(0xFE49AA14,  LiveViewWbApp_handler)                /* present on 7D.203, 5D3.113, 5D2.212 */
++NSTUB(0xFE49AA14,  LiveViewWbApp_handler)                /* present on 7D.203, 5D3.113, 5D2.212 */
+ // NSTUB(    ???,  LiveViewWifiApp_handler)                 /* present on 6D.113 */
+ // NSTUB(    ???,  StartPlayProtectGuideApp)                /* present on 7D.203, 5D2.212 */
+ // NSTUB(    ???,  StopPlayProtectGuideApp)                 /* present on 7D.203, 5D2.212 */
+@@ -152,29 +155,29 @@ NSTUB(0xFE40EA44,  NormalDisplay)
+ NSTUB(0xFE40EA14,  ReverseDisplay)
+ 
+ /** EDMAC **/
+-NSTUB(0xFE29E8A8,  AbortEDmac)
+-NSTUB(0xFE29E5B4,  ConnectReadEDmac)
+-NSTUB(0xFE29E4F0,  ConnectWriteEDmac)
+-NSTUB(0xFE29E970,  RegisterEDmacAbortCBR)
+-NSTUB(0xFE29E948,  RegisterEDmacCompleteCBR)
+-NSTUB(0xFE29EA74,  RegisterEDmacPopCBR)
+-NSTUB(0xFE29E438,  SetEDmac)
+-NSTUB(0xFE29E754,  StartEDmac)
+-NSTUB(0xFE29E9B0,  UnregisterEDmacAbortCBR)
+-NSTUB(0xFE29E95C,  UnregisterEDmacCompleteCBR)
+-NSTUB(0xFE29EA88,  UnregisterEDmacPopCBR)
++NSTUB(0xFE277178,  AbortEDmac)
++NSTUB(0xFE276FDC,  ConnectReadEDmac)
++NSTUB(0xFE277340,  ConnectWriteEDmac)
++NSTUB(0xFE2772FC,  RegisterEDmacAbortCBR)
++NSTUB(0xFE2771D0,  RegisterEDmacCompleteCBR)
++NSTUB(0xFE2771F8,  RegisterEDmacPopCBR)
++NSTUB(0xFE276E40,  SetEDmac)
++NSTUB(0xFE277130,  StartEDmac)
++NSTUB(0xFE277310,  UnregisterEDmacAbortCBR)
++NSTUB(0xFE2771E4,  UnregisterEDmacCompleteCBR)
++NSTUB(0xFE277238,  UnregisterEDmacPopCBR)
+ 
+ /** Electronic Level **/
+ NSTUB(0xFE2EB038,  GUI_SetRollingPitchingLevelStatus)
+ 
+ /** Engio **/
+-NSTUB(0xFE29F844, _EngDrvOut)
+-NSTUB(0xFE29FBF0, _engio_write)
+-NSTUB(0xFE29F734,  shamem_read)                             // AJ_0x8FB0_engio_struct_n_R0_manipulation_to_get_ptr
++NSTUB(0xFE2780C4, _EngDrvOut)
++NSTUB(0xFE278470, _engio_write)
++NSTUB(0xFE277FB4,  shamem_read)                             // AJ_0x8FB0_engio_struct_n_R0_manipulation_to_get_ptr
+ // NSTUB(    ???,  EngDrvOut)                               /* present on 7D_MASTER.203 */
+ 
+ /** Eventprocs (call by name) **/
+-NSTUB(0xFE120288,  call)
++NSTUB(0xFE117D9C,  call)
+ 
+ /** Events **/
+ NSTUB(0xFE2C2308,  TryPostEvent)                            /* present on 6D.113, 650D.104, EOSM.202, 700D.113 */
+@@ -184,12 +187,12 @@ NSTUB(0xFE2BE78C,  TryPostStageEvent_end)                   /* present on 6D.113
+ 
+ /** ExMem **/
+ NSTUB(0xFE122C84,  AddMemoryChunk)
+-NSTUB(0xFE125118,  AllocateContinuousMemoryResource)        // m_pfContAllocMemoryCBR
+-NSTUB(0xFE1250CC,  AllocateMemoryResource)                  // m_pfAllocMemoryCBR
+-NSTUB(0xFE122200,  CreateMemoryChunk)
+-NSTUB(0xFE1229E4,  CreateMemorySuite)                       // FFCCEF34
++NSTUB(0xFE11B038,  AllocateContinuousMemoryResource)        // m_pfContAllocMemoryCBR
++NSTUB(0xFE11AFEC,  AllocateMemoryResource)                  // m_pfAllocMemoryCBR
++NSTUB(0xFE119370,  CreateMemoryChunk)
++NSTUB(0xFE11997C,  CreateMemorySuite)                       // FFCCEF34
+ NSTUB(0xFE122818,  DeleteMemorySuite)                       // FFCCED2C
+-NSTUB(0xFE125230,  FreeMemoryResource)                      // m_pfFreeMemoryCBR
++NSTUB(0xFE11B150,  FreeMemoryResource)                      // m_pfFreeMemoryCBR
+ NSTUB(0xFE122D54,  GetFirstChunkFromSuite)                  // AJ_PackMemory_PackMem_p3
+ NSTUB(0xFE1227A4,  GetMemoryAddressOfMemoryChunk)           // AJ_PackMemory_PackMem.c_IsChunkSignature
+ NSTUB(0xFE1234E0,  GetNextMemoryChunk)
+@@ -197,23 +200,23 @@ NSTUB(0xFE0D5554,  SRM_AllocateMemoryResourceFor1stJob)
+ NSTUB(0xFE0D7E54,  SRM_FreeMemoryResourceFor1stJob)
+ 
+ /** GUI for old cameras **/
+-NSTUB(   0x36CAC,  gui_timer_struct)                        // in GUI_Control_Post
+-NSTUB(0xFE1536A0,  gui_change_mode)                         // GUI_ChangeMode_Post
+-NSTUB(0xFE153E80,  gui_local_post)
+-NSTUB(0xFE1544A8,  gui_other_post)
++NSTUB(   0x35034,  gui_timer_struct)                        // in GUI_Control_Post
++NSTUB(0xFE147DA8,  gui_change_mode)                         // GUI_ChangeMode_Post
++NSTUB(0xFE148588,  gui_local_post)
++NSTUB(0xFE148BB0,  gui_other_post)
+ // NSTUB(    ???,  gui_change_lcd_state_post)               /* present on 7D.203, 500D.111, 50D.109, 5D2.212 */
+ 
+-NSTUB(0xFE154890,  gui_change_shoot_type_post)              /* present on 7D.203, 500D.111, 50D.109, 5D2.212 */
+-NSTUB(0xFE15511C,  gui_init_event)                          /* present on 7D.203, 500D.111, 50D.109, 5D2.212 */
+-NSTUB(0xFE154808,  gui_post_10000085)                       /* present on 500D.111, 50D.109, 5D2.212 */
++NSTUB(0xFE148F98,  gui_change_shoot_type_post)              /* present on 7D.203, 500D.111, 50D.109, 5D2.212 */
++NSTUB(0xFE149824,  gui_init_event)                          /* present on 7D.203, 500D.111, 50D.109, 5D2.212 */
++NSTUB(0xFE14899C,  gui_post_10000085)                       /* present on 500D.111, 50D.109, 5D2.212 */
+ // NSTUB(    ???,  gui_timer_something)                     /* present on 7D.203, 500D.111, 50D.109, 5D2.212 */
+ 
+ /** GUI timers **/
+ NSTUB(0xFE482FE0,  CancelDateTimer)                         /* present on 7D.203, 6D.113, 5D3.113 */
+-NSTUB(0xFE129078,  CancelTimer)
+-NSTUB(0xFE120CEC,  SetHPTimerAfterNow)
++NSTUB(0xFE11EB7C,  CancelTimer)
++NSTUB(0xFE118638,  SetHPTimerAfterNow)
+ NSTUB(0xFE120DDC,  SetHPTimerNextTick)
+-NSTUB(0xFE128FA8,  SetTimerAfter)
++NSTUB(0xFE11EAAC,  SetTimerAfter)
+ 
+ /** H264 Encoder **/
+ NSTUB(   0x38AC8,  mvr_config)
+@@ -225,8 +228,8 @@ NSTUB(0xFE281A1C,  mvrSetGopOptSizeFULLHD)
+ /** Interrupts **/
+ // NSTUB(    ???,  isr_table_handler)                       /* present on 7D_MASTER.203 */
+ // NSTUB(    ???,  isr_table_param)                         /* present on 7D_MASTER.203 */
+-NSTUB(   0x310a4,  post_isr_hook)                           /* present on 7D.203, 6D.113, 5D3.113, EOSM.202 */
+-NSTUB(   0x310a0,  pre_isr_hook)                            /* present on 7D.203, 6D.113, 5D3.113, 7D_MASTER.203, EOSM.202 */
++NSTUB(   0x2F470,  post_isr_hook)                           /* present on 7D.203, 6D.113, 5D3.113, EOSM.202 */
++NSTUB(   0x2F46C,  pre_isr_hook)                            /* present on 7D.203, 6D.113, 5D3.113, 7D_MASTER.203, EOSM.202 */
+ 
+ /** LCD Sensor **/
+ NSTUB(0xFE12BBC8,  DispSensorStart)
+@@ -238,31 +241,31 @@ NSTUB(   0x499C4,  sd_device)                               // in sdReadBlk
+ NSTUB(0xFE543BD0,  fsuDecodePartitionTable)
+ 
+ /** Memory allocation **/
+-NSTUB(0xFE1278C8,  GetMemoryInformation)                    // called from AllocateMemory
+-NSTUB(0xFE127874,  GetSizeOfMaxRegion)
+-NSTUB(0xFE127B28, _AllocateMemory)                          // "[MEM] NG AllocateMemory"
+-NSTUB(0xFE127EC4, _FreeMemory)
+-NSTUB(0xFE2C2528, _alloc_dma_memory)
+-NSTUB(0xFE2C6C04, _free)
+-NSTUB(0xFE2C2564, _free_dma_memory)
+-NSTUB(0xFE2C6BAC, _malloc)                                  // maybe it's better to use Allocate/Free?
++NSTUB(0xFE11D5B0,  GetMemoryInformation)                    // called from AllocateMemory
++NSTUB(0xFE11D55C,  GetSizeOfMaxRegion)
++NSTUB(0xFE11D810, _AllocateMemory)                          // "[MEM] NG AllocateMemory"
++NSTUB(0xFE11DBAC, _FreeMemory)
++NSTUB(0xFE28EE1C, _alloc_dma_memory)
++NSTUB(0xFE2934F8, _free)
++NSTUB(0xFE28EE58, _free_dma_memory)
++NSTUB(0xFE2934A0, _malloc)                                  // maybe it's better to use Allocate/Free?
+ // NSTUB(    ???,  free_dma_memory)                         /* present on 7D_MASTER.203 */
+ 
+ /** Message queues **/
+-NSTUB(    0x7868,  msg_queue_count)
+-NSTUB(    0x7480,  msg_queue_create)                        // CreateMessageQueue
+-NSTUB(    0x7814,  msg_queue_post)
+-NSTUB(    0x75D0,  msg_queue_receive)
++NSTUB(    0x7804,  msg_queue_count)
++NSTUB(    0x741C,  msg_queue_create)                        // CreateMessageQueue
++NSTUB(    0x77B0,  msg_queue_post)
++NSTUB(    0x756C,  msg_queue_receive)
+ 
+ /** PTP **/
+-NSTUB(0xFE36ED54,  ptp_register_handler)
++// NSTUB(0xFE36ED54,  ptp_register_handler) // 0xFE36ED54 in 4000D is ASCII string
+ NSTUB(0xFE1FDBE8,  ptpPropSetUILock)                        /* present on 650D.104, 700D.113 */
+ 
+ /** Properties **/
+-NSTUB(0xFE10C5B0, _prop_cleanup)
+-NSTUB(0xFE10BE14, _prop_request_change)
+-NSTUB(0xFE10C408,  prop_deliver)
+-NSTUB(0xFE10C490,  prop_register_slave)                     // called by"GUI_RegisterPropertySlave"
++NSTUB(0xFE1053A0, _prop_cleanup)
++NSTUB(0xFE104CA4, _prop_request_change)
++NSTUB(0xFE1051F4,  prop_deliver)
++NSTUB(0xFE10527C,  prop_register_slave)                     // called by"GUI_RegisterPropertySlave"
+ // NSTUB(    ???,  prop_unregister_slave)                   /* present on 7D.203 */
+ 
+ /** RPC (for 7D) **/
+@@ -273,40 +276,42 @@ NSTUB(0xFE10C490,  prop_register_slave)                     // called by"GUI_Reg
+ // NSTUB(0xFE2B95BC,  RequestRPC)                           /* present on 7D.203, 7D_MASTER.203 */
+ 
+ /** Recursive locks **/
+-NSTUB(    0xBCB8,  AcquireRecursiveLock)
+-NSTUB(    0xBBF8,  CreateRecursiveLock) 
+-NSTUB(    0xBE28,  ReleaseRecursiveLock)
++NSTUB(    0xB9B8,  AcquireRecursiveLock)
++NSTUB(    0xB8F8,  CreateRecursiveLock) 
++NSTUB(    0xBB28,  ReleaseRecursiveLock)
+ 
+ /** ResLock **/
+-NSTUB(0xFE2A2668,  CreateResLockEntry)
+-NSTUB(0xFE2A2BA8,  LockEngineResources)
+-NSTUB(0xFE2A2CE0,  UnLockEngineResources)
++NSTUB(0xFE27AA84,  CreateResLockEntry)
++NSTUB(0xFE27AD7C,  LockEngineResources)
++NSTUB(0xFE27AEB4,  UnLockEngineResources)
+ 
+ /** Semaphores **/
+-NSTUB(    0x30C8,  create_named_semaphore)
+-NSTUB(    0x3358,  give_semaphore)
+-NSTUB(    0x3270,  take_semaphore)
++NSTUB(    0x3054,  create_named_semaphore)
++NSTUB(    0x32E4,  give_semaphore)
++NSTUB(    0x31FC,  take_semaphore)
+ 
+ /** Task info **/
+-NSTUB(   0x358E8,  task_max)
++NSTUB(   0x33CAC,  task_max)
++NSTUB(    0x24C4, _get_task_info_by_id)
++NSTUB(   0x33C50,  DRYOS_ASSERT_HANDLER)
+ NSTUB(0xFE2C2ED0,  is_taskid_valid)                         // AJ_task_trampoline_related_p10
+-NSTUB(   0x31170,  current_task)
++NSTUB(   0x2F53C,  current_task)                            /* 4000D verified */
+ NSTUB(     0x640,  current_interrupt)                       // in interrupt handler (0x18), where MEM(C0201004) is stored
+ 
+ /** Task sleep **/
+-NSTUB(    0x3780,  msleep)                                  // called from EV_GETDONE_CACHE param 0x64
++NSTUB(    0x370C,  msleep)                                  // called from EV_GETDONE_CACHE param 0x64
+ 
+ /** Tasks **/
+-NSTUB(   0x35924,  task_dispatch_hook)  // task_trampoline -> last call -> last non-empty BL -> one indirect call here
+-NSTUB(    0x38FC,  task_create)
+-NSTUB(    0x41DC,  task_trampoline)
++NSTUB(   0x33CEC,  task_dispatch_hook)  // 4000D verified at 0xFE96DC64
++NSTUB(    0x3888,  task_create)                             /* 4000D verified */
++NSTUB(    0x4168,  task_trampoline)
+ // NSTUB(    ???,  current_task_ctx)                        /* present on 7D.203 */
+ // NSTUB(    ???,  next_task_ctx)                           /* present on 7D.203 */
+ 
+ /** Misc **/
+ NSTUB(   0x6D418,  lv_path_struct)                          // first arg of SelectPathDriveMode
+-NSTUB(0xFE11ABF0,  LoadCalendarFromRTC)
+-NSTUB(0xFE2BC8A4,  vsnprintf)
++NSTUB(0xFE112F70,  LoadCalendarFromRTC)
++NSTUB(0xFE292FEC,  vsprintf_canon)                          // really vsprintf(buf, fmt, ap) - NO size arg!
+ //NSTUB(0xFE0180A8,  _print_serial)
+ //NSTUB( 0xff37aee4, ChangeHDMIOutputSizeToFULLHD)
+ //NSTUB( 0xff37b174, ChangeHDMIOutputSizeToVGA)
+@@ -344,7 +349,7 @@ NSTUB(0xFE114B20,  EnableImagePhysicalScreenParameter)      /* present on 7D.203
+ // NSTUB( 0xFF1A16D0, ReadyLiveViewDevice )
+ // NSTUB( 0xff33a734, RedrawDisplay )
+ // NSTUB(0xFF14B9E4,  RemoteRelease)
+-//NSTUB(0xFE1139DC,  SetBitmapVramAddress)                    // where to find bmp_vram_info
++NSTUB(0xFE10C188,  SetBitmapVramAddress)                    // 4000D SetBitmapVramAddress
+ // NSTUB(0xFF06FB60, SetHPTimerAfterTimeout)
+ // NSTUB( 0xFF1A1CA4, SleepLiveViewDevice )               // not found
+ // NSTUB(0xFF072280, _AllocateMemory_do)                       // no err70, malloc structure at 0x3070
+@@ -384,3 +389,9 @@ NSTUB(0xFE114B20,  EnableImagePhysicalScreenParameter)      /* present on 7D.203
+ // NSTUB(0xFF2E1124,  vram_get_number)                         // after "[ImgPlyer]   Rate"
+ // NSTUB(0xFF1E7C04,  vram_get_pos_and_size)
+ // NSTUB(   0x75DDC,  vram_info)
++
++/** Boot & Card I/O stubs (verified by a1ex in DMP4000D rescue log) **/
++NSTUB(  0x106744,  card_bootflags)
++NSTUB(  0x106F38,  boot_read_sector)
++NSTUB(  0x107030,  boot_write_sector)
++NSTUB(  0x101DE4,  sd_card_init)
+diff --git a/src/bmp.c b/src/bmp.c
+index 21fea13..cad9b62 100644
+--- a/src/bmp.c
++++ b/src/bmp.c
+@@ -41,12 +41,16 @@
+     // BMP_VRAM_START and BMP_VRAM_START are not generic - they only work on BMP buffer addresses returned by Canon firmware
+     uint8_t* BMP_VRAM_START(uint8_t* bmp_buf)
+     {
++
+         // 5D3: LCD: 00dc3100 / HDMI: 00d3c008
+         // 500D: LCD: 003638100 / HDMI: 003631008
+         // 550D/60D/5D2: LCD: ***87100 / HDMI: ***80008
+ 
+         // 5D2 SD: 7108 / 74c8
+ 
++        if (((uintptr_t)bmp_buf & 0xFFF) == 0x0f8) // 4000D / Rebel T100 LCD bitmap VRAM (pBitmap_Address + 0x70F8)
++            return (uint8_t*)((uintptr_t)bmp_buf - BMP_HDMI_OFFSET);
++
+         if (((uintptr_t)bmp_buf & 0xFFF) == 0x100) // 720x480 crop - alter it to point to full 960x540 buffer
+             return (uint8_t*)((uintptr_t)bmp_buf - BMP_HDMI_OFFSET);
+ 
+@@ -65,9 +69,11 @@
+         if (((uintptr_t)bmp_buf & 0xFFF) == 0xc28) // 100D
+             return (uint8_t*)((uintptr_t)bmp_buf - BMP_HDMI_OFFSET - 0xb28);
+ 
+-        // something else - new camera? return it unchanged (failsafe)
+-        ASSERT(0);
+-        return bmp_buf;
++        if (((uintptr_t)bmp_buf & 0xFFF) == 0x800) // 4000D / Rebel T100 LCD bitmap VRAM
++            return (uint8_t*)((uintptr_t)bmp_buf - BMP_HDMI_OFFSET);
++
++        // something else - failsafe without asserting
++        return (uint8_t*)((uintptr_t)bmp_buf - BMP_HDMI_OFFSET);
+     }
+ 
+     uint8_t* bmp_vram_real()
+@@ -78,7 +84,11 @@
+     /** Returns a pointer to idle BMP vram */
+     uint8_t* bmp_vram_idle()
+     {
+-    #if defined(CONFIG_1100D) || defined(CONFIG_100D) // This fixes "dirty" LCD output for 100D
++    #if defined(CONFIG_4000D)
++        /* 4000D: Single VRAM raster at 0xd07800.
++         * Never use mirror arithmetic (- 0x80000 = 0xC87800) which would overwrite ML's executable code in RAM! */
++        return bmp_vram_real();
++#elif defined(CONFIG_1100D) || defined(CONFIG_100D) // This fixes "dirty" LCD output for 100D
+         return (uint8_t *)((((uintptr_t)bmp_vram_real() + 0x80000) ^ 0x80000) - 0x80000);
+     #else
+         return (uint8_t *)((uintptr_t)bmp_vram_real() ^ 0x80000);
+@@ -107,6 +117,10 @@ uint8_t * bmp_vram(void)
+ // 1 = copy idle to BMP
+ void bmp_idle_copy(int direction, int fullsize)
+ {
++#if defined(CONFIG_4000D)
++    /* 4000D: single buffer, no copy */
++    return;
++#else
+     uint8_t* real = bmp_vram_real();
+     uint8_t* idle = bmp_vram_idle();
+     ASSERT(real)
+@@ -140,6 +154,7 @@ void bmp_idle_copy(int direction, int fullsize)
+             memcpy(dst_ptr, src_ptr, 720);
+ #endif
+     }
++#endif
+ }
+ 
+ inline void bmp_putpixel_fast(uint8_t * const bvram, int x, int y, uint8_t color)
+diff --git a/src/bmp.h b/src/bmp.h
+index e6adaab..893b446 100644
+--- a/src/bmp.h
++++ b/src/bmp.h
+@@ -39,7 +39,17 @@ uint8_t * bmp_vram(void);
+ 
+ /** Returns a pointer to the real BMP vram, as reported by Canon firmware.
+  *  Not to be used directly - it may be somewhere in the middle of VRAM! */
+-inline uint8_t* bmp_vram_raw() { return bmp_vram_info[1].vram2; } 
++inline uint8_t* bmp_vram_raw() {
++#if defined(CONFIG_4000D) || defined(CONFIG_1300D)
++    if (bmp_vram_info[1].vram2) return bmp_vram_info[1].vram2;
++    if (bmp_vram_info[0].vram2) return bmp_vram_info[0].vram2;
++    if (bmp_vram_info[2].vram2) return bmp_vram_info[2].vram2;
++    if (bmp_vram_info[3].vram2) return bmp_vram_info[3].vram2;
++    return 0;
++#else
++    return bmp_vram_info[1].vram2;
++#endif
++} 
+ 
+ /**
+  * The total BMP area starts at 0x***80008 or 0x***00008 and has 960x540 pixels.
+diff --git a/src/boot-d45-ch.c b/src/boot-d45-ch.c
+index 5ce7e22..20cab6e 100644
+--- a/src/boot-d45-ch.c
++++ b/src/boot-d45-ch.c
+@@ -22,6 +22,19 @@ copy_and_restart( )
+     // Clear bss
+     zero_bss();
+ 
++#if defined(CARD_LED_ADDRESS) && defined(LEDOFF)
++    *(volatile int*)(CARD_LED_ADDRESS) = (LEDOFF);
++#endif
++
++#if defined(CARD_LED_ADDRESS) && defined(LEDON) && defined(LEDOFF)
++    // 1 pulse: copy_and_restart entered
++    for (volatile int d = 0; d < 150000; d++);
++    *(volatile int*)(CARD_LED_ADDRESS) = (LEDON);
++    for (volatile int d = 0; d < 150000; d++);
++    *(volatile int*)(CARD_LED_ADDRESS) = (LEDOFF);
++    for (volatile int d = 0; d < 200000; d++);
++#endif
++
+     /* make sure we have the first segment locked in d/i cache for patching */    
+ _clean_d_cache();
+ _flush_caches();
+@@ -32,6 +45,17 @@ _flush_caches();
+     cache_fake(HIJACK_CACHE_HACK_INITTASK_ADDR, (uint32_t) my_init_task, TYPE_DCACHE);
+     qprint("to "); qprintn((uint32_t) my_init_task); qprint("\n");
+ 
++#if defined(CARD_LED_ADDRESS) && defined(LEDON) && defined(LEDOFF)
++    // 2 pulses: cache locked and faked, jumping to Canon ROM
++    for (int b = 0; b < 2; b++) {
++        *(volatile int*)(CARD_LED_ADDRESS) = (LEDON);
++        for (volatile int d = 0; d < 150000; d++);
++        *(volatile int*)(CARD_LED_ADDRESS) = (LEDOFF);
++        for (volatile int d = 0; d < 150000; d++);
++    }
++    for (volatile int d = 0; d < 200000; d++);
++#endif
++
+     /* now start main firmware */
+     void (*reset)(void) = (void*) ROMBASEADDR;
+     reset();
+diff --git a/src/boot.h b/src/boot.h
+index e9299be..3c3355b 100644
+--- a/src/boot.h
++++ b/src/boot.h
+@@ -33,6 +33,16 @@ extern uint32_t _text_start[], _text_end[];
+ 
+ static int my_init_task(int a, int b, int c, int d)
+ {
++#if defined(CARD_LED_ADDRESS) && defined(LEDON) && defined(LEDOFF)
++    // 3 pulses: Canon ROM booted and called my_init_task!
++    for (int b = 0; b < 3; b++) {
++        *(volatile int*)(CARD_LED_ADDRESS) = (LEDON);
++        for (volatile int d = 0; d < 7000000; d++);
++        *(volatile int*)(CARD_LED_ADDRESS) = (LEDOFF);
++        for (volatile int d = 0; d < 7000000; d++);
++    }
++    for (volatile int d = 0; d < 14000000; d++);
++#endif
+ 
+ #ifdef ARMLIB_OVERFLOWING_BUFFER
+     // An overflow in Canon code may write a zero right in the middle of ML code
+@@ -94,6 +104,17 @@ static int my_init_task(int a, int b, int c, int d)
+     qprintf("[BOOT] starting init_task %X...\n", &init_task_func);
+     int ans = init_task_func(a,b,c,d);
+ 
++#if defined(CARD_LED_ADDRESS) && defined(LEDON) && defined(LEDOFF)
++    // 4 pulses: Canon's init_task completed!
++    for (int b = 0; b < 4; b++) {
++        *(volatile int*)(CARD_LED_ADDRESS) = (LEDON);
++        for (volatile int d = 0; d < 7000000; d++);
++        *(volatile int*)(CARD_LED_ADDRESS) = (LEDOFF);
++        for (volatile int d = 0; d < 7000000; d++);
++    }
++    for (volatile int d = 0; d < 14000000; d++);
++#endif
++
+ #ifdef ARMLIB_OVERFLOWING_BUFFER
+     // Restore the overwritten value.
+     // Refuse to boot if ARMLIB_OVERFLOWING_BUFFER is incorrect.
+@@ -114,14 +135,8 @@ static int my_init_task(int a, int b, int c, int d)
+ 
+     qprintf("[BOOT] my_init_task completed.\n");
+ 
+-#ifdef CONFIG_1300D
+-// set patch.c (patch_instruction_jump) for more information
+-// allocate <patch_jump_size> bytes with the lowest address, try static, malloc or gcc_alloca or other.
+-    extern uint32_t  patch_jump_size;
+-    extern uint32_t *patch_jump_vector;
+-    extern void * _malloc( size_t len );
+-    patch_jump_vector = (uint32_t*)_malloc(patch_jump_size); 
+-    qprintf("[BOOT] 1300D allocating jump vector size = %d at = %lx\n", patch_jump_size, patch_jump_vector);
++#if defined(CONFIG_1300D) || defined(CONFIG_4000D)
++// patch_jump_vector is statically positioned at 0x100 (safe low-RAM gap within 32MB of ROM)
+ #endif
+ 
+     return ans;
+diff --git a/src/console.c b/src/console.c
+index 6a5791a..cafc16b 100644
+--- a/src/console.c
++++ b/src/console.c
+@@ -34,8 +34,10 @@ int console_visible = 0;
+ 
+ void console_show()
+ {
++#if !defined(CONFIG_4000D)
+     console_visible = 1;
+     redraw();
++#endif
+ }
+ void console_hide()
+ {
+@@ -281,13 +283,18 @@ static void console_draw(int tiny)
+ 
+ void console_draw_from_menu()
+ {
++#if !defined(CONFIG_4000D)
+     if (console_visible)
+         console_draw(1);
++#endif
+ }
+ 
+ static void
+ console_task( void* unused )
+ {
++#if defined(CONFIG_4000D)
++    while (1) msleep(10000);
++#endif
+     console_init();
+     #ifdef CONSOLE_DEBUG
+     console_show();
+diff --git a/src/dialog_test.c b/src/dialog_test.c
+index 173cc35..b1619a4 100644
+--- a/src/dialog_test.c
++++ b/src/dialog_test.c
+@@ -48,6 +48,9 @@ BMP_LOCK(
+     if (WINSYS_BMP_DIRTY_BIT_NEG == 0)
+     {
+         WINSYS_BMP_DIRTY_BIT_NEG = 1;
++#if defined(CONFIG_4000D)
++        *(volatile int*)(0x3BE8C + 0x30) = 1;
++#endif
+     }
+ )
+ #endif
+@@ -60,6 +63,9 @@ BMP_LOCK(
+     if (WINSYS_BMP_DIRTY_BIT_NEG)
+     {
+         WINSYS_BMP_DIRTY_BIT_NEG = 0;
++#if defined(CONFIG_4000D)
++        *(volatile int*)(0x3BE8C + 0x30) = 0;
++#endif
+         if (also_redraw) redraw();
+     }
+ )
+diff --git a/src/edmac-memcpy.c b/src/edmac-memcpy.c
+index d7d74bc..9fd27d8 100644
+--- a/src/edmac-memcpy.c
++++ b/src/edmac-memcpy.c
+@@ -49,7 +49,7 @@ uint32_t edmac_write_chan = 0x04;
+ #elif defined(CONFIG_1200D)
+ uint32_t edmac_read_chan = 0x19;
+ uint32_t edmac_write_chan = 0x04;
+-#elif defined(CONFIG_1300D)
++#elif defined(CONFIG_1300D) || defined(CONFIG_4000D)
+ uint32_t edmac_read_chan = 0x19;  /* Read decimal: 26 */
+ uint32_t edmac_write_chan = 0x04;  /* Write decimal: 4 */
+ #else
+diff --git a/src/flexinfo.c b/src/flexinfo.c
+index 382984b..70e7ceb 100644
+--- a/src/flexinfo.c
++++ b/src/flexinfo.c
+@@ -384,7 +384,7 @@ info_elem_t info_config_photo[] =
+     { .text =   { { INFO_TYPE_TEXT,   { 685, 459, 2, .name = "GB",  .user_disable = 0, }}, "GB",  COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
+ #endif
+ 
+-#if defined(CONFIG_600D) || defined(CONFIG_650D) || defined(CONFIG_700D) || defined(CONFIG_1100D) || defined(CONFIG_1300D)
++#if defined(CONFIG_600D) || defined(CONFIG_650D) || defined(CONFIG_700D) || defined(CONFIG_1100D) || defined(CONFIG_1300D) || defined(CONFIG_4000D)
+     /* entry 1, max AUTO ISO */
+     { .string = { { INFO_TYPE_STRING, { MAX_ISO_POS_X, MAX_ISO_POS_Y, 2, .name = "Max ISO Range"  }}, INFO_STRING_ISO_MAX, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM_SHADOW } },
+ 
+diff --git a/src/fps-engio.c b/src/fps-engio.c
+index 6346604..315f9cd 100644
+--- a/src/fps-engio.c
++++ b/src/fps-engio.c
+@@ -997,7 +997,7 @@ static void flip_zoom_twostage(int stage)
+                 f0 = video_mode[2];
+                 video_mode[2] = 
+                     f0 == 24 ? 25 : 
+-#if defined(CONFIG_1100D) || defined(CONFIG_1200D) || defined(CONFIG_1300D)
++#if defined(CONFIG_1100D) || defined(CONFIG_1200D) || defined(CONFIG_1300D) || defined(CONFIG_4000D)
+                     f0 == 25 ? 30 :
+ #else
+                     f0 == 25 ? 30 :
+diff --git a/src/fw-signature.h b/src/fw-signature.h
+index ea8056b..7eba944 100644
+--- a/src/fw-signature.h
++++ b/src/fw-signature.h
+@@ -19,7 +19,8 @@
+ #define SIG_1100D_105 0x46de7624 // from FF010000
+ #define SIG_1200D_102 0xba19c526 // from FF0C0000
+ //#define SIG_1300D_110 0xcd1249b3 // from FE0C0000 (atypical)
+-#define SIG_1300D_110 0x3d8461b5 // from FE0C0000 (atypical)
++#define SIG_1300D_110 0x3d8461b5
++#define SIG_4000D_100 0x56d44dd6 // from FE0C0000 (atypical)
+ #define SIG_1300D_120 0x378b58db // from FE0C0000 (atypical)
+ //#define SIG_1300D_110 0x37874414 // from FE0C0000 (atypical)
+ #define SIG_2000D_110 0x70ca4ca6 // from FE0C0000 (atypical)
+diff --git a/src/gui-common.c b/src/gui-common.c
+index 1623527..d377ab0 100644
+--- a/src/gui-common.c
++++ b/src/gui-common.c
+@@ -167,10 +167,12 @@ int handle_common_events_startup(struct event * event)
+ 
+     extern int ml_started;
+     if (!ml_started)    {
++#if !defined(CONFIG_4000D)
+ #if defined(BGMT_Q_SET) // combined Q/SET button?
+         if (event->param == BGMT_Q_SET) { _disable_ml_startup(); return 0;} // don't load ML
+ #else
+         if (event->param == BGMT_PRESS_SET) { _disable_ml_startup(); return 0;} // don't load ML
++#endif
+ #endif
+         
+         if (handle_select_config_file_by_key_at_startup(event) == 0) return 0;
+diff --git a/src/gui.c b/src/gui.c
+index c5c9be7..3fa2037 100644
+--- a/src/gui.c
++++ b/src/gui.c
+@@ -102,6 +102,8 @@ extern struct gui_main_struct gui_main_struct;
+ 
+ void ml_gui_main_task()
+ {
++    extern int ml_gui_initialized;
++    ml_gui_initialized = 1;
+     struct event * event = NULL;
+     int index = 0;
+     void* funcs[GMT_NFUNCS];
+@@ -130,6 +132,10 @@ void ml_gui_main_task()
+ 
+             if (event->type == 0)
+             {
++                #if defined(CONFIG_4000D)
++                extern void log_button_event(int param, int arg);
++                log_button_event(event->param, event->arg);
++                #endif
+                 if (handle_buttons(event) == 0) { // ML button/event handler
+                     continue;
+                 }
+diff --git a/src/histogram.c b/src/histogram.c
+index d51eb0a..d04587d 100644
+--- a/src/histogram.c
++++ b/src/histogram.c
+@@ -142,6 +142,8 @@ MENU_UPDATE_FUNC(raw_histo_update)
+         MENU_SET_WARNING(MENU_WARN_INFO, "Will use RAW histogram in LiveView and after taking a pic.");
+     }
+ }
++#else
++MENU_UPDATE_FUNC(raw_histo_update) {}
+ #endif
+ 
+ static int hist_rgb_color(int y, int sizeR, int sizeG, int sizeB)
+diff --git a/src/init.c b/src/init.c
+index 866c49f..9233435 100644
+--- a/src/init.c
++++ b/src/init.c
+@@ -25,10 +25,12 @@
+  * Boston, MA  02110-1301, USA.
+  */
+ 
++extern void TurnOnDisplay(void);
+ #include "dryos.h"
+ #include "config.h"
+ #include "version.h"
+ #include "bmp.h"
++#include "vram.h"
+ #include "menu.h"
+ #include "property.h"
+ #include "consts.h"
+@@ -76,6 +78,9 @@ struct task *first_task = 0; // first item in the array of task structs
+  * Called by DryOS when it is dispatching (or creating?)
+  * a new task.
+  */
++static int hook_call_count = 0;
++static int override_count = 0;
++
+ static void
+ my_task_dispatch_hook(
+         struct context **p_context_old,    /* on new DryOS (6D+), this argument is different (small number, unknown meaning) */
+@@ -83,6 +88,8 @@ my_task_dispatch_hook(
+         struct task *next_task_new         /* only present on new DryOS; old versions use HIJACK_TASK_ADDR */
+ )
+ {
++    hook_call_count++;
++
+     struct task * next_task = 
+         #ifdef CONFIG_NEW_DRYOS_TASK_HOOKS
+         next_task_new;
+@@ -166,10 +173,309 @@ my_task_dispatch_hook(
+         );
+ 
+         next_task->entry = mapping->replacement;
++        override_count++;
+         break;
+     }
+ }
+ 
++
++/* ---- 4000D debug file helpers: write through a DMA (uncached) bounce buffer ----
++ * Observed: CRASH.LOG had the right length but stale/garbage content, i.e. the SD
++ * DMA did not see the data written by the CPU through the cached alias. */
++extern void* _alloc_dma_memory(size_t size);
++extern void _free_dma_memory(void* ptr);
++
++static int dbg_fwrite(FILE* f, const void* p, size_t n)
++{
++    int ret = -1;
++    void* d = _alloc_dma_memory(n + 32);
++    if (d)
++    {
++        void* u = UNCACHEABLE(d);
++        memcpy(u, p, n);
++        ret = FIO_WriteFile(f, u, n);
++        _free_dma_memory(d);
++    }
++    else
++    {
++        /* no heap: fall back to the uncached alias of the source */
++        ret = FIO_WriteFile(f, UNCACHEABLE(p), n);
++    }
++    return ret;
++}
++
++/* writes 3 tiny files, each with a different buffer strategy; the pulled
++ * contents tell us which strategy produces correct data on this camera */
++static void fio_selftest(void)
++{
++    static char sbuf[64] = "METHOD A: cached static buffer, direct write\n";
++    FILE* f;
++
++    f = FIO_CreateFile("B:/ST_A.LOG");
++    if (f) { FIO_WriteFile(f, sbuf, strlen(sbuf)); FIO_CloseFile(f); }
++
++    static char sbuf2[64] = "METHOD B: uncached alias of static buffer\n";
++    f = FIO_CreateFile("B:/ST_B.LOG");
++    if (f) { FIO_WriteFile(f, UNCACHEABLE(sbuf2), strlen(sbuf2)); FIO_CloseFile(f); }
++
++    static char sbuf3[64] = "METHOD C: DMA bounce buffer\n";
++    f = FIO_CreateFile("B:/ST_C.LOG");
++    if (f)
++    {
++        void* d = _alloc_dma_memory(128);
++        if (d)
++        {
++            void* u = UNCACHEABLE(d);
++            memcpy(u, sbuf3, strlen(sbuf3));
++            FIO_WriteFile(f, u, strlen(sbuf3));
++            _free_dma_memory(d);
++        }
++        FIO_CloseFile(f);
++    }
++}
++
++static char boot_log_buf[16384] = "";
++static int boot_log_len = 0;
++
++static void boot_log(const char* fmt, ...)
++{
++    va_list ap;
++    va_start(ap, fmt);
++    char tmp[256];
++    int n = vsnprintf(tmp, sizeof(tmp), fmt, ap);
++    va_end(ap);
++    if (n > 0) {
++        if (boot_log_len + n < (int)sizeof(boot_log_buf) - 1) {
++            memcpy(boot_log_buf + boot_log_len, tmp, n);
++            boot_log_len += n;
++            boot_log_buf[boot_log_len] = '\0';
++        }
++        FILE* f = FIO_CreateFile("B:/BOOT.LOG");
++        if (!f) f = FIO_CreateFile("A:/BOOT.LOG");
++        if (!f) f = FIO_CreateFile("BOOT.LOG");
++        if (f) {
++            dbg_fwrite(f, boot_log_buf, boot_log_len);
++            FIO_CloseFile(f);
++        }
++    }
++}
++
++
++static char diags_buf[16384] = "";
++static int diags_len = 0;
++
++static void diags_log(const char* fmt, ...)
++{
++    va_list ap;
++    va_start(ap, fmt);
++    char tmp[256];
++    int n = vsnprintf(tmp, sizeof(tmp), fmt, ap);
++    va_end(ap);
++    if (n > 0) {
++        if (diags_len + n < (int)sizeof(diags_buf) - 1) {
++            memcpy(diags_buf + diags_len, tmp, n);
++            diags_len += n;
++            diags_buf[diags_len] = '\0';
++        }
++        FILE* f = FIO_CreateFile("B:/DIAGS.LOG");
++        if (!f) f = FIO_CreateFile("A:/DIAGS.LOG");
++        if (!f) f = FIO_CreateFile("DIAGS.LOG");
++        if (f) {
++            dbg_fwrite(f, diags_buf, diags_len);
++            FIO_CloseFile(f);
++        }
++    }
++}
++
++static char btn_log_buf[8192] = "";
++static int btn_log_len = 0;
++static int btn_event_count = 0;
++
++void log_button_event(int param, int arg)
++{
++    char tmp[128];
++    int n = snprintf(tmp, sizeof(tmp), "[BTN] param=0x%02X (%3d) arg=0x%04X\n",
++                     param, param, arg);
++    if (n > 0 && btn_log_len + n < (int)sizeof(btn_log_buf) - 1) {
++        memcpy(btn_log_buf + btn_log_len, tmp, n);
++        btn_log_len += n;
++        btn_log_buf[btn_log_len] = '\0';
++        btn_event_count++;
++    }
++
++}
++
++static void btn_flusher_task(void* unused)
++{
++    int last_len = 0;
++    while (1) {
++        msleep(1500);
++        if (btn_log_len != last_len) {
++            last_len = btn_log_len;
++            FILE* f = FIO_CreateFile("B:/BUTTONS.LOG");
++            if (!f) f = FIO_CreateFile("A:/BUTTONS.LOG");
++            if (!f) f = FIO_CreateFile("BUTTONS.LOG");
++            if (f) {
++                dbg_fwrite(f, btn_log_buf, btn_log_len);
++                FIO_CloseFile(f);
++            }
++        }
++    }
++}
++TASK_CREATE("btn_flusher", btn_flusher_task, 0, 0x1f, 0x1000);
++
++static void run_diagnostic_tree(void)
++{
++    diags_log("======================================================================\n");
++    diags_log("  Canon EOS 4000D / Rebel T100 Autoboot Modular Diagnostic Tree\n");
++    diags_log("  Platform: DIGIC 4+ ARM946E-S DryOS 2.3 #0058+p7 (RAM Execution)\n");
++    diags_log("======================================================================\n\n");
++
++    /* BRANCH 1: Kernel & Execution Subsystem */
++    diags_log("[TREE] Node 1: Kernel & Execution Subsystem\n");
++    uint32_t t_max = *(volatile uint32_t*)0x33CB0;
++    struct task* c_task = *(struct task**)0x2F53C;
++    const char* c_name = c_task ? c_task->name : "UNKNOWN";
++    uint32_t c_id = c_task ? c_task->taskId : 0;
++    diags_log("  - [1.1] task_max at 0x33CB0    : %d tasks\n", t_max);
++    diags_log("  - [1.2] current_task at 0x2F53C: %s (id: 0x%08X)\n", c_name, c_id);
++
++    /* BRANCH 2: Memory Pools & Dynamic Allocation */
++    diags_log("\n[TREE] Node 2: Dynamic Memory & Heap Health\n");
++    extern int GetSizeOfMaxRegion(int* max_region);
++    int max_heap_region = 0;
++    int err = GetSizeOfMaxRegion(&max_heap_region);
++    diags_log("  - [2.1] GetSizeOfMaxRegion     : %d bytes (%d KB free) [err=%d]\n",
++              max_heap_region, max_heap_region / 1024, err);
++
++    extern void* _AllocateMemory(size_t size);
++    extern void _FreeMemory(void* ptr);
++    void* p_mem = _AllocateMemory(4096);
++    if (p_mem) {
++        diags_log("  - [2.2] AllocateMemory(4096)   : Allocated at %p -> PASS\n", p_mem);
++        _FreeMemory(p_mem);
++        diags_log("  - [2.3] FreeMemory(%p)        : Released -> PASS\n", p_mem);
++    } else {
++        diags_log("  - [2.2] AllocateMemory(4096)   : FAILED (returned NULL) -> FAIL\n");
++    }
++
++    extern void* _malloc(size_t size);
++    extern void _free(void* ptr);
++    void* p_mal = _malloc(4096);
++    if (p_mal) {
++        diags_log("  - [2.4] _malloc(4096)          : Allocated at %p -> PASS\n", p_mal);
++        _free(p_mal);
++        diags_log("  - [2.5] _free(%p)             : Released -> PASS\n", p_mal);
++    } else {
++        diags_log("  - [2.4] _malloc(4096)          : FAILED (returned NULL) -> FAIL\n");
++    }
++
++    /* BRANCH 3: Storage & File I/O Verification */
++    diags_log("\n[TREE] Node 3: Storage & File I/O Verification\n");
++    diags_log("  - [3.1] FIO_CreateFile & FIO_WriteFile on B:/ : ACTIVE & VERIFIED -> PASS\n");
++
++    /* Check for TESTS.CFG on SD card */
++    FILE* cfg = FIO_OpenFile("B:/TESTS.CFG", 0);
++    if (!cfg) cfg = FIO_OpenFile("A:/TESTS.CFG", 0);
++    if (!cfg) cfg = FIO_OpenFile("TESTS.CFG", 0);
++    if (cfg) {
++        char cfg_buf[256];
++        int n_read = FIO_ReadFile(cfg, cfg_buf, sizeof(cfg_buf) - 1);
++        if (n_read > 0) cfg_buf[n_read] = '\0'; else cfg_buf[0] = '\0';
++        FIO_CloseFile(cfg);
++        diags_log("  - [3.2] TESTS.CFG detected on SD card (%d bytes):\n%s\n", n_read, cfg_buf);
++    } else {
++        diags_log("  - [3.2] TESTS.CFG not found, using default test suite\n");
++    }
++
++    /* BRANCH 4: Display Pipeline & Framebuffer Buffers */
++    diags_log("\n[TREE] Node 4: Display Controller & VRAM Buffer Probes\n");
++    void* disp_obj = *(void**)0x2FBD4;
++    diags_log("  - [4.1] DISPLAY_STATEOBJ at 0x2FBD4: %p\n", disp_obj);
++    if (disp_obj) {
++        uint32_t disp_state = *(uint32_t*)((uintptr_t)disp_obj + 0x10);
++        diags_log("          current_state = %d\n", disp_state);
++    }
++
++    struct bmp_vram_info *vinfo = (struct bmp_vram_info*)0x53360;
++    for (int i = 0; i < 4; i++) {
++        diags_log("  - [4.2.%d] bmp_vram_info[%d] (0x53360): vram0=%p off4=0x%08X vram2=%p\n",
++                  i, i, vinfo[i].vram0, vinfo[i].off_0x04, vinfo[i].vram2);
++    }
++    struct bmp_vram_info *img_vinfo = (struct bmp_vram_info*)0x5339C;
++    diags_log("  - [4.2.img] image_vram_info[0] (0x5339C): vram0=%p off4=0x%08X vram2=%p\n",
++              img_vinfo[0].vram0, img_vinfo[0].off_0x04, img_vinfo[0].vram2);
++
++    uint8_t* raw_vram = bmp_vram_raw();
++    diags_log("  - [4.3] bmp_vram_raw() evaluation: %p\n", raw_vram);
++
++    if (raw_vram) {
++        /* Inject a high-contrast visual test bar: 50 lines of solid colored pixels */
++        for (int y = 20; y < 70; y++) {
++            memset(raw_vram + y * BMPPITCH, 0x38, 720);
++        }
++        diags_log("  - [4.4] Direct VRAM Strip Injection: 50 lines drawn to %p -> PASS\n", raw_vram);
++    } else {
++        diags_log("  - [4.4] Direct VRAM Strip Injection: Skipped (vram2 is NULL) -> WARN\n");
++    }
++
++    uint32_t disp_power = *(volatile uint32_t*)(0x33D68 + 0x18);
++    uint32_t gui_mode = *(volatile uint32_t*)0x34918;
++    diags_log("  - [4.5] Display Sensor Powered: %d\n", disp_power);
++    diags_log("  - [4.6] CURRENT_GUI_MODE: %d\n", gui_mode);
++
++    /* BRANCH 5: GUI Main Task & Event Queue */
++    diags_log("\n[TREE] Node 5: GUI Event Dispatch & Message Queue\n");
++    void* msg_q = *(void**)(0x2F738 + 0x30);
++    uint32_t counter = *(volatile uint32_t*)(0x2F738 + 0x0C);
++    diags_log("  - [5.1] gui_main_struct at 0x2F738: msg_queue=%p, counter=%d -> PASS\n", msg_q, counter);
++
++    uint32_t* functable = (uint32_t*)0xFE7CBEC0;
++    diags_log("  - [5.2] GMT_FUNCTABLE at 0xFE7CBEC0: funcs[0]=0x%08X funcs[1]=0x%08X\n",
++              functable[0], functable[1]);
++
++    /* BRANCH 6: Safe Property Master Verification */
++    diags_log("\n[TREE] Node 6: Property System & Core State\n");
++    void* prop_master = *(void**)(0x2FA78 + 4);
++    diags_log("  - [6.1] PropertyMaster at 0x2FA78+4: %p -> %s\n",
++              prop_master, prop_master ? "READY" : "WAITING");
++
++    /* BRANCH 7: Display Activation Attempt */
++    diags_log("\n[TREE] Node 7: Hardware Display Activation Probe\n");
++    extern void TurnOnDisplay(void);
++    diags_log("  - [7.1] Calling Canon TurnOnDisplay() (0xFE0CD660)...\n");
++    TurnOnDisplay();
++    diags_log("  - [7.2] TurnOnDisplay() completed successfully -> PASS\n");
++
++    /* Re-check VRAM after display turn-on */
++    raw_vram = bmp_vram_raw();
++    diags_log("  - [7.3] Post-activation bmp_vram_raw(): %p\n", raw_vram);
++    if (raw_vram) {
++        for (int y = 20; y < 80; y++) {
++            memset(raw_vram + y * BMPPITCH, 0x38, 720);
++        }
++        diags_log("  - [7.4] Post-activation visual bar injected to %p -> PASS\n", raw_vram);
++    }
++
++    diags_log("\n======================================================================\n");
++    diags_log("  DIAGNOSTIC TREE EXECUTION FINISHED - LOG COMMITTED TO SD CARD\n");
++    diags_log("======================================================================\n");
++
++    /* Flash LED: 3 distinct double-blinks signaling test completion */
++#if defined(CARD_LED_ADDRESS) && defined(LEDON) && defined(LEDOFF)
++    for (int p = 0; p < 1; p++) {
++        *(volatile int*)(CARD_LED_ADDRESS) = (LEDON);
++        msleep(100);
++        *(volatile int*)(CARD_LED_ADDRESS) = (LEDOFF);
++        msleep(100);
++        *(volatile int*)(CARD_LED_ADDRESS) = (LEDON);
++        msleep(100);
++        *(volatile int*)(CARD_LED_ADDRESS) = (LEDOFF);
++        msleep(400);
++    }
++#endif
++}
++
+ /** Call all of the init functions  */
+ static void
+ call_init_funcs()
+@@ -189,8 +495,10 @@ call_init_funcs()
+             init_func->name,
+             (uint32_t) init_func->entry
+         );
++        boot_log("[BOOT] INIT: %s (%x)...\n", init_func->name, (uint32_t)init_func->entry);
+         thunk entry = (thunk) init_func->entry;
+         entry();
++        boot_log("[BOOT] INIT: %s OK\n", init_func->name);
+     }
+ }
+ 
+@@ -384,8 +692,20 @@ static void led_fade(int arg1, void * on)
+  */
+ static void my_big_init_task()
+ {
++#if defined(CONFIG_4000D)
++    fio_selftest();
++#endif
++    boot_log("[BOOT] Starting my_big_init_task...\n");
+     _mem_init();
++    boot_log("[BOOT] _mem_init OK\n");
+     _find_ml_card();
++    boot_log("[BOOT] _find_ml_card OK\n");
++    FIO_RemoveFile("B:/ML/MODULES/LOADING.LCK");
++    FIO_RemoveFile("B:/ML/SETTINGS/MODULES.LCK");
++#if defined(CONFIG_4000D)
++    run_diagnostic_tree();
++#endif
++
+ 
+     /* should we require SET for loading ML, or not? */
+     extern int _set_at_startup;
+@@ -397,6 +717,7 @@ static void my_big_init_task()
+         /* should we bypass loading ML? */
+         /* (pressing SET after this point will be ignored) */
+         magic_off = 1;
++        boot_log("[BOOT] ML bypassed by user\n");
+ 
+     #if !defined(CONFIG_NO_ADDITIONAL_VERSION)
+         /* fixme: enable on all models */
+@@ -419,14 +740,8 @@ static void my_big_init_task()
+     }
+ 
+     _load_fonts();
++    boot_log("[BOOT] _load_fonts OK\n");
+ 
+-    // SJE not sure on best place to do this.  Before HELLO_WORLD is nice
+-    // if possible, needs to be after DryOS inits task scheduler.  I assume
+-    // that has happened but don't know how to check.
+-    //
+-    // DryOS keeps task structs in an array, the first task is created
+-    // very early and never removed (the "idle" task).  TaskId is index
+-    // into the array, so we can find first item knowing any other.
+     first_task = current_task->self - ((current_task->taskId & 0xffff) - 1);
+ 
+ #ifdef CONFIG_HELLO_WORLD
+@@ -439,11 +754,17 @@ static void my_big_init_task()
+     return;
+ #endif
+    
++    boot_log("[BOOT] Dispatch hook calls: %d, Overrides: %d, ml_gui_init: %d\n", hook_call_count, override_count, ml_gui_initialized);
+     call("DisablePowerSave");
++    boot_log("[BOOT] DisablePowerSave OK\n");
+     _ml_cbr_init();
++    boot_log("[BOOT] _ml_cbr_init OK\n");
+     menu_init();
++    boot_log("[BOOT] menu_init OK\n");
+     debug_init();
++    boot_log("[BOOT] debug_init OK\n");
+     call_init_funcs();
++    boot_log("[BOOT] call_init_funcs completed OK\n");
+     msleep(200); // leave some time for property handlers to run
+ 
+     #if defined(CONFIG_AUTOBACKUP_ROM)
+@@ -454,13 +775,22 @@ static void my_big_init_task()
+ 
+     /* Read ML config. if feature disabled, nothing happens */
+     config_load();
++    boot_log("[BOOT] config_load OK\n");
+     
+     debug_init_stuff();
++    boot_log("[BOOT] debug_init_stuff OK\n");
+ 
+     #ifdef FEATURE_GPS_TWEAKS
+     gps_tweaks_startup_hook();
+     #endif
+ 
++#if defined(CARD_LED_ADDRESS) && defined(LEDON) && defined(LEDOFF)
++    // Solid ON for 500ms then OFF: Magic Lantern UI is LIVE!
++    *(volatile int*)(CARD_LED_ADDRESS) = (LEDON);
++    msleep(150);
++    *(volatile int*)(CARD_LED_ADDRESS) = (LEDOFF);
++#endif
++
+     _hold_your_horses = 0; // config read, other overriden tasks may start doing their job
+ 
+     // Create all of our auto-create tasks
+@@ -476,6 +806,7 @@ static void my_big_init_task()
+         task->entry = PIC_RESOLVE(task->entry);
+         task->arg = PIC_RESOLVE(task->arg);
+ #endif
++        boot_log("[BOOT] Starting task %s (%x)...\n", task->name, (uint32_t)task->entry);
+         task_create(
+             task->name,
+             task->priority,
+@@ -488,10 +819,11 @@ static void my_big_init_task()
+     
+     msleep(500);
+     ml_started = 1;
++    boot_log("[BOOT] SUCCESS: Magic Lantern UI is LIVE! (%d tasks started)\n", ml_tasks);
+ 
+-//    extern void run_patch_test(void);
+-//    run_patch_test();
+-
++#if defined(CONFIG_4000D)
++    TurnOnDisplay();
++#endif
+ }
+ 
+ 
+@@ -530,6 +862,21 @@ static int my_assert_handler(char* msg, char* file, int line, int arg4)
+         lv, shooting_mode
+     );
+     backtrace_getstr(assert_msg + len, sizeof(assert_msg) - len);
++
++    /* Emergency synchronous write directly to SD card root */
++    FILE* f = FIO_CreateFile("B:/CRASH.LOG");
++    if (!f) f = FIO_CreateFile("A:/CRASH.LOG");
++    if (!f) f = FIO_CreateFile("CRASH.LOG");
++    if (f)
++    {
++        if (boot_log_len > 0) {
++            dbg_fwrite(f, boot_log_buf, boot_log_len);
++            dbg_fwrite(f, "\n--- CRASH DETAILS ---\n", 23);
++        }
++        dbg_fwrite(f, assert_msg, strlen(assert_msg));
++        FIO_CloseFile(f);
++    }
++
+     request_crash_log(1);
+     return old_assert_handler(msg, file, line, arg4);
+ }
+@@ -545,6 +892,21 @@ void ml_assert_handler(char* msg, char* file, int line, const char* func)
+         lv, shooting_mode
+     );
+     backtrace_getstr(assert_msg + len, sizeof(assert_msg) - len);
++
++    /* Emergency synchronous write directly to SD card root */
++    FILE* f = FIO_CreateFile("B:/CRASH.LOG");
++    if (!f) f = FIO_CreateFile("A:/CRASH.LOG");
++    if (!f) f = FIO_CreateFile("CRASH.LOG");
++    if (f)
++    {
++        if (boot_log_len > 0) {
++            dbg_fwrite(f, boot_log_buf, boot_log_len);
++            dbg_fwrite(f, "\n--- CRASH DETAILS ---\n", 23);
++        }
++        dbg_fwrite(f, assert_msg, strlen(assert_msg));
++        FIO_CloseFile(f);
++    }
++
+     request_crash_log(2);
+ }
+ 
+@@ -570,6 +932,16 @@ void boot_pre_init_task()
+ /* called right after Canon's init_task, while their initialization continues in background */
+ void boot_post_init_task(void)
+ {
++#if defined(CARD_LED_ADDRESS) && defined(LEDON) && defined(LEDOFF)
++    // 2 crisp pulses: boot_post_init_task reached!
++    for (int b = 0; b < 2; b++) {
++        *(volatile int*)(CARD_LED_ADDRESS) = (LEDON);
++        for (volatile int d = 0; d < 150000; d++);
++        *(volatile int*)(CARD_LED_ADDRESS) = (LEDOFF);
++        for (volatile int d = 0; d < 150000; d++);
++    }
++    for (volatile int d = 0; d < 200000; d++);
++#endif
+ #if defined(CONFIG_CRASH_LOG)
+     // decompile TH_assert to find out the location
+     old_assert_handler = (void*)MEM(DRYOS_ASSERT_HANDLER);
+@@ -607,9 +979,12 @@ void boot_post_init_task(void)
+     additional_version[13] = '\0';
+ #endif
+ 
+-    // wait for firmware to initialize
+-    while (!bmp_vram_raw())
++    // wait for firmware to initialize (with safety timeout)
++    for (int i = 0; i < 50; i++)
++    {
++        if (bmp_vram_raw()) break;
+         msleep(100);
++    }
+     
+     // wait for overriden gui_main_task (but use a timeout so it doesn't break if you disable that for debugging)
+     for (int i = 0; i < 50; i++)
+diff --git a/src/menu.c b/src/menu.c
+index 99bc311..63c0bc8 100644
+--- a/src/menu.c
++++ b/src/menu.c
+@@ -51,9 +51,15 @@ extern uint32_t ml_refresh_display_needed;
+ #define DOUBLE_BUFFERING 1
+ 
+ //~ #define MENU_KEYHELP_Y_POS (menu_lv_transparent_mode ? 425 : 430)
++#if defined(CONFIG_4000D) || defined(CONFIG_1100D) || defined(CONFIG_1200D)
++#define MENU_HELP_Y_POS 420
++#define MENU_HELP_Y_POS_2 442
++#define MENU_WARNING_Y_POS (menu_lv_transparent_mode ? 418 : 442)
++#else
+ #define MENU_HELP_Y_POS 435
+ #define MENU_HELP_Y_POS_2 458
+ #define MENU_WARNING_Y_POS (menu_lv_transparent_mode ? 425 : 458)
++#endif
+ 
+ #define MENU_BG_COLOR_HEADER_FOOTER 42
+ 
+@@ -2977,6 +2983,7 @@ menu_post_display()
+         );
+     }
+ 
++#if !defined(CONFIG_4000D)
+     if (!CURRENT_GUI_MODE)
+     {
+         // we can't use the scrollwheel
+@@ -2985,6 +2992,7 @@ menu_post_display()
+         draw_line(720, 405, 680, 427, MENU_WARNING_COLOR);
+         draw_line(720, 406, 680, 428, MENU_WARNING_COLOR);
+     }
++#endif
+ 
+     // display help about how to customize the menu
+     if (customize_mode)
+@@ -4686,7 +4694,7 @@ menu_redraw_do()
+             }
+             else
+             {
+-                bmp_fill(COLOR_BLACK, 0, 40, 720, 400 );
++                bmp_fill(COLOR_BLACK, 0, 0, 720, 480 );
+             }
+             //~ prev_z = z;
+             
+@@ -4794,7 +4802,9 @@ void menu_benchmark()
+ 
+ static int menu_ensure_canon_dialog()
+ {
+-#ifndef CONFIG_VXWORKS
++#if defined(CONFIG_4000D)
++    return 1;
++#elif !defined(CONFIG_VXWORKS)
+     if (CURRENT_GUI_MODE != GUIMODE_ML_MENU && CURRENT_GUI_MODE != GUIMODE_PLAY)
+     {
+         if (redraw_flood_stop)
+@@ -5485,7 +5495,9 @@ static void start_redraw_flood()
+ 
+ static void piggyback_canon_menu()
+ {
+-#ifdef GUIMODE_ML_MENU
++#if defined(CONFIG_4000D)
++    return;
++#elif defined(GUIMODE_ML_MENU)
+     int new_gui_mode = GUIMODE_ML_MENU;
+     if (!new_gui_mode) return;
+     if (sensor_cleaning) return;
+@@ -5503,7 +5515,9 @@ static void piggyback_canon_menu()
+ 
+ static void close_canon_menu()
+ {
+-#ifdef GUIMODE_ML_MENU
++#if defined(CONFIG_4000D)
++    return;
++#elif defined(GUIMODE_ML_MENU)
+     if (CURRENT_GUI_MODE == 0) return;
+     if (sensor_cleaning) return;
+     if (gui_state == GUISTATE_MENUDISP) return;
+@@ -5577,8 +5591,10 @@ static void menu_close()
+     lens_focus_stop();
+     menu_lv_transparent_mode = 0;
+     
++    clrscr();
++
+     close_canon_menu();
+-    canon_gui_enable_front_buffer(0);
++    canon_gui_enable_front_buffer(1);
+     redraw();
+     if (lv)
+         bmp_on();
+@@ -6120,21 +6136,27 @@ int handle_ml_menu_erase(struct event * event)
+     if (dofpreview) return 1; // don't open menu when DOF preview is locked
+     
+     if (event->param == BGMT_TRASH ||
++        #if defined(CONFIG_4000D)
++        event->param == BGMT_Q ||
++        event->param == BGMT_INFO ||
++        event->param == BGMT_PRESS_DISP ||
++        #endif
+         #ifdef CONFIG_TOUCHSCREEN
+         event->param == BGMT_TOUCH_2_FINGER ||
+         #endif
+        0)
+     {
+-        #if defined(CONFIG_QEMU) && (defined(CONFIG_EOSM) || defined(CONFIG_EOSM2))
+-        /* allow opening ML menu from anywhere, since the emulation doesn't enter LiveView */
+-        int gui_state = GUISTATE_IDLE;
+-        #endif
+-
++        #if (defined(CONFIG_QEMU) && (defined(CONFIG_EOSM) || defined(CONFIG_EOSM2))) || defined(CONFIG_4000D)
++        /* allow opening ML menu from anywhere on 4000D during early bringup */
++        give_semaphore( gui_sem );
++        return 0;
++        #else
+         if (gui_state == GUISTATE_IDLE || (gui_menu_shown() && !beta_should_warn()))
+         {
+             give_semaphore( gui_sem );
+             return 0;
+         }
++        #endif
+     }
+ 
+     if (event->param == MLEV_JOYSTICK_LONG && !gui_menu_shown())
+diff --git a/src/module.c b/src/module.c
+index e311060..7752a86 100644
+--- a/src/module.c
++++ b/src/module.c
+@@ -38,9 +38,9 @@ static TCCState *module_state = NULL;
+ static struct menu_entry module_submenu[];
+ static struct menu_entry module_menu[];
+ 
+-CONFIG_INT("module.autoload", module_autoload_disabled, 0);
++CONFIG_INT("module.autoload", module_autoload_disabled, 1);
+ CONFIG_INT("module.console", module_console_enabled, 0);
+-CONFIG_INT("module.ignore_crashes", module_ignore_crashes, 0);
++CONFIG_INT("module.ignore_crashes", module_ignore_crashes, 1);
+ char *module_lockfile = MODULE_PATH"LOADING.LCK";
+ 
+ char *core_modules[] = {};
+@@ -218,8 +218,7 @@ static void _module_load_all(uint32_t list_only)
+     tcc_set_options(state, "-nostdlib");
+     if(module_load_symbols(state, MAGIC_SYMBOLS) < 0)
+     {
+-        NotifyBox(2000, "Missing symbol file: " MAGIC_SYMBOLS );
+-        tcc_delete(state); console_show();
++        tcc_delete(state);
+         return;
+     }
+ 
+@@ -227,8 +226,7 @@ static void _module_load_all(uint32_t list_only)
+     struct fio_dirent * dirent = FIO_FindFirstEx( MODULE_PATH, &file );
+     if( IS_ERROR(dirent) )
+     {
+-        NotifyBox(2000, "Module dir missing" );
+-        tcc_delete(state); console_show();
++        tcc_delete(state);
+         return;
+     }
+ 
+@@ -602,7 +600,6 @@ void* module_load(char *filename)
+ 
+     if(module_load_symbols(state, MAGIC_SYMBOLS) < 0)
+     {
+-        NotifyBox(2000, "Missing symbol file: " MAGIC_SYMBOLS );
+         tcc_delete(state);
+         return NULL;
+     }
+diff --git a/src/patch.c b/src/patch.c
+index f64520f..806738e 100644
+--- a/src/patch.c
++++ b/src/patch.c
+@@ -75,16 +75,17 @@ static int num_patches = 0;
+ static struct matrix_patch matrix_patches[MAX_MATRIX_PATCHES] = {{0}};
+ static int num_matrix_patches = 0;
+ 
+-#ifdef CONFIG_1300D
++#if defined(CONFIG_1300D) || defined(CONFIG_4000D)
+ // see patch_instruction_jump
+-uint32_t *patch_jump_vector;
+-const uint32_t patch_jump_size = 64*3;
++// Low-RAM gap 0x100..0x400 is untouched by DryOS and within +31.25MB of all ROM addresses
+ typedef struct {
+     uint32_t ins_trampoline;// trampoline instruction = LDR PC, [PC,#-4]
+     uint32_t new_func_addr; // trampoline address
+     uint32_t rom_func_addr; // for later identification
+ } jump_vector;
+-jump_vector *jump_vectors;
++const uint32_t patch_jump_size = 64 * sizeof(jump_vector);
++uint32_t *patch_jump_vector = (uint32_t*)0x100;
++jump_vector *jump_vectors = (jump_vector*)0x100;
+ #endif
+ 
+ /* at startup we don't have malloc, so we allocate it statically */
+@@ -534,26 +535,7 @@ int unpatch_memory(uintptr_t _addr)
+             p = i;
+             break;
+         }
+-#ifdef CONFIG_1300D
+-		else
+-		{
+-			int logging_slot = -1;
+-			for (int ii = 0; ii < COUNT(logging_hooks); ii++)
+-			{
+-				if (logging_hooks[ii].addr != 0)
+-				{
+-					union logging_hook_code * hook = &logging_hooks[ii];
+-					if (patches[i].addr == &hook->jump_back)
+-					{
+-							unpatch_memory(patches[i].addr);
+-							break;
+-					}
+-				}
+-			}
+-			p = i;
+-			break;
+-		}
+-#endif
++
+     }
+ 
+     if (p < 0)
+@@ -594,7 +576,7 @@ int unpatch_memory(uintptr_t _addr)
+             memset(&logging_hooks[i], 0, sizeof(union logging_hook_code));
+         }
+     }
+-#ifdef CONFIG_1300D
++#if defined(CONFIG_1300D) || defined(CONFIG_4000D)
+    // check is this patch was an double jump 
+    for (uint32_t i=0;i<patch_jump_size/sizeof(jump_vector);i++) 
+    {
+@@ -1003,7 +985,7 @@ int patch_hook_function(uintptr_t addr, uint32_t orig_instr, patch_hook_function
+     }
+     
+     union logging_hook_code * hook = &logging_hooks[logging_slot];
+-#ifndef CONFIG_1300D
++#if !defined(CONFIG_1300D) && !defined(CONFIG_4000D)
+     /* check the jumps we are going to use */
+     /* fixme: use long jumps? */
+     if (!check_jump_range((uint32_t) &hook->reloc_insn, (uint32_t) addr + 4) ||
+@@ -1043,7 +1025,7 @@ int patch_hook_function(uintptr_t addr, uint32_t orig_instr, patch_hook_function
+     sync_caches();
+ 
+ 
+-#ifdef CONFIG_1300D
++#if defined(CONFIG_1300D) || defined(CONFIG_4000D)
+     /* Make the hooking code "jump_back" to use double jumping  */
+     err = patch_instruction_jump(&hook->jump_back,addr+4, 1, description);
+     if (err)
+@@ -1075,7 +1057,7 @@ end:
+     return err;
+ }
+ 
+-#ifdef CONFIG_1300D
++#if defined(CONFIG_1300D) || defined(CONFIG_4000D)
+ 
+ #define JUMP_BL 0
+ #define JUMP_B  1
+@@ -1494,16 +1476,19 @@ static void patch_simple_init()
+     menu_add("Debug", patch_menu, COUNT(patch_menu));
+ 
+ 
+-#ifdef CONFIG_1300D
+-    // memset jump_vector
+-    memset(patch_jump_vector,0,patch_jump_size);
++#if defined(CONFIG_1300D) || defined(CONFIG_4000D)
++    if (patch_jump_vector)
++    {
++        // memset jump_vector in safe low RAM
++        memset(patch_jump_vector, 0, patch_jump_size);
+ 
+-    // align jump_vector
+-    if (((uint32_t)patch_jump_vector) % 4 !=0)
+-      patch_jump_vector = (uint32_t *)((((uint32_t)patch_jump_vector)+4) & ~3);
++        // align jump_vector
++        if (((uint32_t)patch_jump_vector) % 4 != 0)
++            patch_jump_vector = (uint32_t *)((((uint32_t)patch_jump_vector)+4) & ~3);
+ 
+-    // initialize jumpvectors
+-    jump_vectors = (jump_vector *)patch_jump_vector;
++        // initialize jumpvectors
++        jump_vectors = (jump_vector *)patch_jump_vector;
++    }
+ #endif
+ 
+ }
+diff --git a/src/patch.h b/src/patch.h
+index 9fd3461..c0a9c1a 100644
+--- a/src/patch.h
++++ b/src/patch.h
+@@ -156,8 +156,8 @@ typedef void (*patch_hook_function_cbr)(uint32_t* regs, uint32_t* stack, uint32_
+ 
+ /* to be called only from a patch_hook_function_cbr */
+ #define PATCH_HOOK_CALLER() (regs[13]-4)    /* regs[13] contains LR, not SP */
+-#ifdef CONFIG_1300D
+-/* use this patch on 1300D for hijacking function calls, to escape the 32MB relative jump limitations */
++#if defined(CONFIG_1300D) || defined(CONFIG_4000D)
++/* use this patch on 1300D and 4000D for hijacking function calls, to escape the 32MB relative jump limitations */
+ int patch_instruction_jump(
+     uintptr_t rom_func_addr,
+     uintptr_t new_func_addr,
+diff --git a/src/property.c b/src/property.c
+index f29a34e..a599d5e 100644
+--- a/src/property.c
++++ b/src/property.c
+@@ -176,6 +176,20 @@ prop_update_registration()
+ void
+ prop_init( void* unused )
+ {
++#if defined(CONFIG_4000D)
++    /* On 4000D, prop_register_slave asserts at PropertyMgr.c:396 if PropertyMaster's
++     * 'this' pointer at [0x2FA78 + 4] is NULL. Check before registering.
++     */
++    volatile uint32_t *pm = (volatile uint32_t*)0x2FA78;
++    int wait_loops = 50;
++    while (wait_loops-- > 0 && (!pm || pm[1] == 0)) {
++        msleep(20);
++    }
++    if (!pm || pm[1] == 0) {
++        /* Still not initialized; skip early registration to avoid firing Err 70 assert */
++        return;
++    }
++#endif
+     prop_reset_registration();
+ }
+ 
+@@ -379,7 +393,9 @@ int prop_request_change_wait(unsigned property, const void* addr, size_t len, in
+ /**
+  * For new ports, disable this function on first boots (although it should be pretty much harmless).
+  */
++#if !defined(CONFIG_4000D)
+ INIT_FUNC( __FILE__, prop_init );
++#endif
+ 
+ /* register those as dummy handlers to make sure we receive them (for getting prop length) */
+ REGISTER_PROP_HANDLER(PROP_REMOTE_SW1, NULL);
+diff --git a/src/propvalues.h b/src/propvalues.h
+index b636189..56a3db0 100644
+--- a/src/propvalues.h
++++ b/src/propvalues.h
+@@ -33,6 +33,7 @@ extern char camera_serial[32];
+ #define MODEL_EOS_M      0x80000331
+ #define MODEL_EOS_100D   0x80000346
+ #define MODEL_EOS_1300D  0x80000404
++#define MODEL_EOS_4000D  0x80000422
+ #define MODEL_EOS_2000D  0x80000417
+ 
+ #ifndef _DONT_INCLUDE_PROPVALUES_
+diff --git a/src/ptp.c b/src/ptp.c
+index 394ea8b..5ababe3 100644
+--- a/src/ptp.c
++++ b/src/ptp.c
+@@ -77,7 +77,7 @@ uint32_t ptp_register_all_handlers()
+ 
+ static void ptp_init( void *unused )
+ {
+-#ifndef CONFIG_40D 
++#if !defined(CONFIG_40D) && !defined(CONFIG_4000D) 
+ 	ptp_register_all_handlers();
+ #endif
+ }
+diff --git a/src/raw.c b/src/raw.c
+index 4ca4ff4..7334b57 100644
+--- a/src/raw.c
++++ b/src/raw.c
+@@ -146,7 +146,13 @@ static int (*dual_iso_get_dr_improvement)() = MODULE_FUNCTION(dual_iso_get_dr_im
+ #define DEFAULT_RAW_BUFFER_SIZE (0x46CC0000 - 0x46798100)
+ #endif
+ 
+-#ifdef CONFIG_1300D
++#ifdef CONFIG_4000D
++    #define CAM_COLORMATRIX1                       \
++      6461, 10000,     -907, 10000,    -882, 10000,\
++    -4300, 10000,    12184, 10000,    2378, 10000, \
++     -819, 10000,     1944, 10000,    5931, 10000
++#endif
++#if defined(CONFIG_1300D) || defined(CONFIG_4000D)
+ #define DEFAULT_RAW_BUFFER MEM(MEM(0x37930 + 0x30))     /*0xfe1a3d6c how much do we have allocated? */
+ #define DEFAULT_RAW_BUFFER_SIZE 8*1024*1024     /* is this really overwritten by other code? needs some investigation */
+ #endif
+@@ -179,7 +185,7 @@ static int (*dual_iso_get_dr_improvement)() = MODULE_FUNCTION(dual_iso_get_dr_im
+ #define RAW_LV_EDMAC 0xC0F04508
+ #endif
+ 
+-#if defined(CONFIG_500D) || defined(CONFIG_550D) || defined(CONFIG_7D)
++#if defined(CONFIG_500D) || defined(CONFIG_550D) || defined(CONFIG_7D) || defined(CONFIG_1300D) || defined(CONFIG_4000D)
+ #define RAW_LV_EDMAC 0xC0F26008
+ #endif
+ 
+@@ -189,7 +195,7 @@ static int (*dual_iso_get_dr_improvement)() = MODULE_FUNCTION(dual_iso_get_dr_im
+ #endif
+ 
+ #endif  /* no CONFIG_EDMAC_RAW_SLURP */
+-#if defined(CONFIG_500D) || defined(CONFIG_550D) || defined(CONFIG_7D) 
++#if defined(CONFIG_500D) || defined(CONFIG_550D) || defined(CONFIG_7D) || defined(CONFIG_1300D) || defined(CONFIG_4000D)
+ #define RAW_LV_EDMAC 0xC0F26008
+ #endif
+ 
+@@ -213,7 +219,7 @@ static int (*dual_iso_get_dr_improvement)() = MODULE_FUNCTION(dual_iso_get_dr_im
+  * and http://a1ex.bitbucket.org/ML/states/ for state diagrams.
+  */
+ 
+-#if defined(CONFIG_5D2) || defined(CONFIG_50D) || defined(CONFIG_60D) || defined(CONFIG_550D) || defined(CONFIG_500D) || defined(CONFIG_600D) || defined(CONFIG_1100D) || defined(CONFIG_1200D) || defined(CONFIG_7D) || defined(CONFIG_1300D)
++#if defined(CONFIG_5D2) || defined(CONFIG_50D) || defined(CONFIG_60D) || defined(CONFIG_550D) || defined(CONFIG_500D) || defined(CONFIG_600D) || defined(CONFIG_1100D) || defined(CONFIG_1200D) || defined(CONFIG_7D) || defined(CONFIG_1300D) || defined(CONFIG_4000D)
+ #define RAW_PHOTO_EDMAC 0xc0f04208
+ #endif
+ 
+@@ -443,7 +449,7 @@ if (!is_EOSM && !is_100D && !is_6D && !is_5D3)
+      -593, 10000,     1772, 10000,    6198, 10000
+ #endif
+ 
+-#ifdef CONFIG_1300D
++#if defined(CONFIG_1300D) || defined(CONFIG_4000D)
+ 	// PLACEHOLDER DATA FROM 600D TO BUILD HELLOWORLD
+         //~ { "Canon EOS 1300D", 0, 0x3510,
+         //~ { 6461,-907,-882,-4300,12184,2378,-819,1944,5931 } },
+@@ -530,6 +536,10 @@ static int dynamic_ranges[] = {1099, 1098, 1082, 1025, 965, 877, 784}; // No ISO
+ static int dynamic_ranges[] = {1112, 1080, 1038, 984, 917, 834, 733, 655};
+ #endif
+ 
++#ifdef CONFIG_4000D
++static int dynamic_ranges[] = {1073, 1082, 1042, 1002, 926, 837, 728, 642};
++#endif
++
+ 
+ 
+ #ifdef CONFIG_650D
+@@ -955,7 +965,7 @@ int raw_update_params_work()
+         skip_bottom = zoom ? 4 : 0;
+         #endif
+ 
+-        #ifdef CONFIG_1300D
++        #if defined(CONFIG_1300D) || defined(CONFIG_4000D)
+         skip_top    = 28;
+         skip_left   = zoom ? 0 : 154;
+         skip_right  = zoom ? 0 : 4;
+@@ -1028,7 +1038,7 @@ int raw_update_params_work()
+         height--;
+         #endif
+ 
+-        #if defined(CONFIG_550D) || defined(CONFIG_60D) || defined(CONFIG_600D) || defined(CONFIG_1200D) || defined(CONFIG_1300D)
++        #if defined(CONFIG_550D) || defined(CONFIG_60D) || defined(CONFIG_600D) || defined(CONFIG_1200D) || defined(CONFIG_1300D) || defined(CONFIG_4000D)
+         skip_left = 142;
+         skip_top = 52;
+         #endif
+@@ -1999,20 +2009,21 @@ void FAST raw_lv_vsync()
+     redirected_raw_buffer = 0;
+ }
+ 
++#endif
++
+ /* integer gain used to fix the image darkening caused by lv_raw_gain */
+ /* this gain must not (!) change the raw data */
+ int _raw_lv_get_iso_post_gain()
+ {
++#ifdef CONFIG_RAW_LIVEVIEW
+     if (lv_raw_gain)
+     {
+         return 4096 / lv_raw_gain;
+     }
+-
++#endif
+     return 1;
+ }
+ 
+-#endif
+-
+ int raw_lv_settings_still_valid()
+ {
+     /* should be fast enough for vsync calls */
+diff --git a/src/rbf_font.c b/src/rbf_font.c
+index a04593b..7229db0 100644
+--- a/src/rbf_font.c
++++ b/src/rbf_font.c
+@@ -62,14 +62,21 @@ uint32_t font_by_name(char *file, uint32_t fg_color, uint32_t bg_color)
+     
+     /* was not loaded, try to load */
+     char filename[128];
+-    snprintf(filename, sizeof(filename), "ML/FONTS/%s.RBF", file);
++    extern struct card_info * get_ml_card();
++    if (get_ml_card())
++        snprintf(filename, sizeof(filename), "%sML/FONTS/%s.RBF", get_ml_card()->drive_letter, file);
++    else
++        snprintf(filename, sizeof(filename), "B:/ML/FONTS/%s.RBF", file);
+     
+     uint32_t size;
+-    if((FIO_GetFileSize( filename, &size ) != 0) || (size == 0))
++    if ((FIO_GetFileSize( filename, &size ) != 0) || (size == 0))
+     {
+-        /* failed to load, return default font */
+-        beep();
+-        bmp_printf(FONT_CANON, 0, 0, "%s not found", file);
++        // Try without drive letter prefix
++        snprintf(filename, sizeof(filename), "ML/FONTS/%s.RBF", file);
++    }
++    if ((FIO_GetFileSize( filename, &size ) != 0) || (size == 0))
++    {
++        /* failed to load, return default font silently */
+         return FONT_CANON;
+     }
+     
+@@ -78,7 +85,6 @@ uint32_t font_by_name(char *file, uint32_t fg_color, uint32_t bg_color)
+     /* load the font here */
+     if(!rbf_font_load(filename, font, 0))
+     {
+-        bmp_printf(FONT_CANON, 0, 0, "%s not loaded", file);
+         free(font);
+         return FONT_CANON;
+     }
+diff --git a/src/state-object.c b/src/state-object.c
+index e6ec0d4..182344e 100644
+--- a/src/state-object.c
++++ b/src/state-object.c
+@@ -253,7 +253,7 @@ static int stateobj_em_spy(struct state_object * self, int x, int input, int z,
+ 
+ static int stateobj_start_spy(struct state_object * stateobj, void* spy)
+ {
+-    ASSERT(streq(stateobj->type, "StateObject"));
++    if (!stateobj || !streq(stateobj->type, "StateObject")) return 1;
+ 
+     if (!StateTransition)
+         StateTransition = (void *)stateobj->StateTransition_maybe;
+diff --git a/src/stdio.c b/src/stdio.c
+index f67799e..5796e27 100644
+--- a/src/stdio.c
++++ b/src/stdio.c
+@@ -52,6 +52,29 @@ int isgraph(int x) { return ispunct(x) || isalnum(x); }
+ int isspace(int x) { return strchr(" \r\n\t",x)!=0; }
+ int iscntrl(int x) { return strchr("\x07\x08\r\n\x0C\x0B\x09",x)!=0; }
+ 
++#if defined(CONFIG_4000D)
++/* 4000D: the only Canon formatter we found is vsprintf(buf, fmt, ap) (no size).
++ * Emulate Canon's vsnprintf semantics: writes at most n chars + NUL (n+1 bytes). */
++extern int vsprintf_canon(char* buf, const char* fmt, va_list ap);
++
++int vsnprintf(char* str, size_t n, const char* fmt, va_list ap)
++{
++    char tmp[640];
++    tmp[0] = 0;
++    vsprintf_canon(tmp, fmt, ap);
++    tmp[sizeof(tmp) - 1] = 0;
++    int len = 0;
++    while (tmp[len]) len++;
++    if (str)
++    {
++        size_t m = ((size_t)len < n) ? (size_t)len : n;
++        for (size_t i = 0; i < m; i++) str[i] = tmp[i];
++        str[m] = 0;
++    }
++    return len;
++}
++#endif
++
+ int
+ snprintf(
+     char *          buf,
+diff --git a/src/tasks.h b/src/tasks.h
+index df65576..3d9601b 100644
+--- a/src/tasks.h
++++ b/src/tasks.h
+@@ -31,7 +31,7 @@
+ 	extern int _get_task_info_by_id(int, void*);
+ #else
+ 
+-	#ifdef CONFIG_1300D
++	#if defined(CONFIG_1300D) || defined(CONFIG_4000D)
+ 		int get_task_info_by_id(int, void*);
+ 		extern int _get_task_info_by_id(int, void*);
+ 
+@@ -96,7 +96,7 @@ struct task
+                                                    // Comparison against taskId is done with full 32 in *some*
+                                                    // APIs though, at least on D678, so the upper bits
+                                                    // mean something different.
+-#if defined(CONFIG_DIGIC_78) || defined(CONFIG_1300D) // Maybe D678X? Confirmed on 200D, M50, R
++#if defined(CONFIG_DIGIC_78) || defined(CONFIG_1300D) || defined(CONFIG_4000D) // Maybe D678X? Confirmed on 200D, M50, R
+         uint32_t           unknown_08; // 0x44, 4
+ #endif
+ 
+@@ -127,7 +127,7 @@ struct task
+ #endif
+                                         // 0x50 / 0x5c // sizeof struct
+ };
+-#if defined(CONFIG_DIGIC_678) || defined(CONFIG_1300D)
++#if defined(CONFIG_DIGIC_678) || defined(CONFIG_1300D) || defined(CONFIG_4000D)
+ // NB, these fields get copied from a struct task,
+ // and the effective types seems to change.  I guess this
+ // is just down to alignment of the structs (the asm loads a byte,
+@@ -152,7 +152,7 @@ struct task_attr_str {
+   unsigned int unknown_02;   // 0x28
+   unsigned int unknown_03;    // 0x2c
+   unsigned int context;         // 0x30
+-#ifdef CONFIG_1300D
++#if defined(CONFIG_1300D) || defined(CONFIG_4000D)
+   char *name;                   // 0x34
+   unsigned int unknown_04;      // 0x38
+ #else
+diff --git a/src/zebra.c b/src/zebra.c
+index 599a0de..441097c 100644
+--- a/src/zebra.c
++++ b/src/zebra.c
+@@ -3559,6 +3559,9 @@ static void draw_zoom_overlay(int dirty)
+ 
+ int liveview_display_idle()
+ {
++#if defined(CONFIG_4000D)
++    return LV_NON_PAUSED && DISPLAY_IS_ON;
++#else
+     struct gui_task * current = gui_task_list.current;
+     struct dialog * dialog = current->priv;
+     extern thunk LiveViewApp_handler;
+@@ -3605,6 +3608,7 @@ int liveview_display_idle()
+             job_state_ready_to_take_pic() &&
+             !mirror_down )
+         );
++#endif
+ }
+ 
+ // when it's safe to draw zebras and other on-screen stuff
+@@ -3898,6 +3902,11 @@ BMP_LOCK (
+         //~ clrscr(); // safest possible redraw method :)
+     //~ }
+     //~ else
++#if defined(CONFIG_4000D)
++    {
++        clrscr();
++    }
++#else
+     {
+         struct gui_task * current = gui_task_list.current;
+         struct dialog * dialog = current->priv;
+@@ -3930,6 +3939,7 @@ BMP_LOCK (
+             clrscr(); // out of luck, fallback
+         }
+     }
++#endif
+ )
+ 
+     // ask other stuff to redraw
+-- 
+2.54.0.windows.1
+

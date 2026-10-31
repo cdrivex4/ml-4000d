@@ -1,0 +1,195 @@
+=== page0.html ===
+TITLE: Canon EOS 4000D / 3000D / Rebel T100
+Found 25 post blocks
+
+--- Post 1 by a1ex () ---
+Just received a firmware dump from this model.
+
+ROM dumper (requires an SD card formatted as FAT32):
+  Quote from: a1ex on January 16, 2019, 09:06:18 AM (https://www.magiclantern.fm/forum/index.php?topic=16534.msg210599#msg210599) 
+  4000D (https://a1ex.magiclantern.fm/debug/portable-rom-dumper/new/DMP4000D.FIR)   
+ 
+  Code   Select   Expand   
+  Magic Lantern Rescue
+ ----------------------------
+ - Model ID: 0x422 4000D
+ - Camera model: Canon EOS 4000D / Rebel T100
+ - Firmware version: 1.0.0 / 1.9.2 1B(13)
+ - IMG naming: 100CANON/IMG_0213.JPG
+ - Boot flags: FIR=0 BOOT=0 RAM=-1 UPD=-1
+ - ROMBASEADDR: 0xFF0C0000
+ - card_bootflags 106744
+ - boot_read/write_sector 106f38 107030
+ - 101DE4 Card init => 2
+ - Dumping ROM0... 100%
+ - MD5: (yours will be different)
+ - Dumping ROM1... 100%
+ - MD5: (yours will be different)
+ - No serial flash.
+ - Saving RESCUE.LOG ...
+ 
+
+To emulate (Canon GUI working out of the box):
+- pretend it's a 1300D
+- apply the following ROM patch (https://www.magiclantern.fm/forum/index.php?topic=17969.msg172893#msg172893):
+  Code   Select   Expand   
+dd if=ROM1.BIN of=BOOT.BIN bs=64k skip=1 count=1
+dd if=BOOT.BIN of=ROM1.BIN bs=64k seek=511
+ 
+- throw away ROM0 (it's not connected)
+- change flash model ID to 0x003825C2 (1300D has 0x003925C2)
+- CURRENT_TASK 0x2F53C
+- 0xFE1171B4 DebugMsg
+- 0x3888 task_create
+
+ 
+
+TODO:
+- commit the emulation sources (my job)
+- start porting ML (your job; follow the 1300D thread)
+
+Have fun!
+
+--- Post 2 by Walter Schulz () ---
+Wait a moment! They called it Rebel T100? Really? 
+The pre-Arnold edition?
+
+SCNR!
+
+--- Post 3 by critix () ---
+You can give me the files ROM0 and ROM1?
+Thanks
+
+--- Post 4 by byteturtle () ---
+I sent it to you in PM.
+
+best regards,
+byteturtle
+
+--- Post 5 by critix () ---
+Thank you.
+Is there a 4000D branch?
+Now I'm working on the values in the stubs.S file
+
+--- Post 6 by dfort () ---
+Got it working in QEMU following a1ex's instructions:
+
+  (https://flic.kr/p/2epmRcU)
+
+A few notes:
+ 
+ Couldn't just add a 4000D directory because it is not supported yet  I put the dumps in the 1300D directory and edited debugmsg.gdb  "change flash model ID to 0x003825C2 (1300D has 0x003925C2)" that's in qemu-eos/qemu-2.5.0/hw/eos/eos.c  ROM0.BIN is still needed with this hack  
+Saw the tweet on this:
+
+  (https://flic.kr/p/2dnu9fj)
+
+  Quote Porting Magic Lantern is expected to be very easy... 
+ ROFLMAO!
+
+--- Post 7 by critix () ---
+Quote Couldn't just add a 4000D directory because it is not supported yet It's work... I add a 4000D directory and run it... it's work
+A step forward: D
+
+--- Post 8 by micheleq65 () ---
+Hello, I just got a 4000D ... can someone share the ROMs ? 
+
+Thank you so much.
+
+Michele
+
+--- Post 9 by Walter Schulz () ---
+Forum rules: https://www.magiclantern.fm/forum/index.php?topic=934.msg1141#msg1141 (https://www.magiclantern.fm/forum/index.php?topic=934.msg1141#msg1141)
+"-Illegal content publishing and linking is prohibited. Under no circumstances may you post copyrighted material to which you do not own the right, especially proprietary Canon firmware code."
+
+ROM files are considered to fall into this category.
+And you are - no offense - a newcomer ...
+
+Why not just running the dumper as the people did you are asking?
+
+--- Post 10 by micheleq65 () ---
+Point taken ... thanks for the notice.
+
+Michele
+
+--- Post 11 by beropolis () ---
+Hi, I was able to install ML on eos 4000d, I just don't know which key starts ML on my camera
+after loading I have such a screen
+https://photos.app.goo.gl/uBBgxHQtpbqR2fEG8 (https://photos.app.goo.gl/uBBgxHQtpbqR2fEG8)
+
+--- Post 12 by critix () ---
+You run ROM dumper, not ML install...
+for this device, you cannot run ML yet
+
+--- Post 13 by beropolis () ---
+thanks for the info. it is a pity that you can not do anything on this camera model
+
+--- Post 14 by critix () ---
+unfortunately, we cannot run ML on this device, at least not now ...
+
+--- Post 15 by cdrivex4 () ---
+very interested in 1. Assisting development to be able to 2. getting this on my newly purchased 4000D and working.
+Any assistance in gaining traction would be great.
+
+--- Post 16 by Walter Schulz () ---
+It may help telling what skills you have. Unicorn level:
+- C and Assembler for embedded systems (preferable ARM architecture) and lots of time.
+
+For starters: Making QEMU run in your environment. See sticky tweet.
+
+--- Post 17 by cdrivex4 () ---
+Er skills... yeah.. have flashed lineageOs on my phone before, reasonably good at following instructions.
+The main gravitation to this thread and to help out was i saw "dfort" has got it working to a degree.
+If i can get there or further an help get it working on camera ill be a happy camper. Probably best to assume am an idiot, an as i go along ill post back what am doing and/or understanding of things.
+
+See sticky tweet.
+ --yeah have read through "The sticky to end all stickies" "https://www.magiclantern.fm/forum/index.php?topic=11108.0 (https://www.magiclantern.fm/forum/index.php?topic=11108.0) " 
+Have also startedreading through thread "Canon EOS 1300D / Rebel T6" as looks to be mirroring what may happen here.
+
+Will be working from windows8.1, have never used qemu(got it installed now) before, but have worked with VMwware, virtualbox.
+
+So far from what ive understood. 
+you guys provide various forms of "autoexec.bin", this works during the boot proc an tell the camera to either "dump" rom or load "ML" from memory card an would then save some settings to memory card, so in the event of a glitch during boot format memory card and start again.
+
+Would i be creating a ROM dump then patch or something else?
+
+--- Post 18 by garlant () ---
+Hello Guys!
+
+It´s possibile to install ML in Canon T100 ou not yet?
+
+--- Post 19 by heder () ---
+Hey   
+
+I might actually be interessed in buying this camera and help development (after I have released a beta ML for 40D) 
+I think this camera is still in production ?. It's cheap, digic 4+ and has 1080p recording. Only downside is a smaller screen, 
+but it's doable.
+
+Any guess on max SD speed ?, wiki says "SDXC" and 3 fps cont shooting (but this limit could be hardcoded)
+
+--- Post 20 by nikfreak () ---
+I expect it to be 20MB/s. Same for 2000D but that one at least has the new sensor with 24MP which  could  be indeed useful with ML for photographers. Forget about it if raw video is your primary goal.
+
+--- Post 21 by copycatthemc () ---
+Hi I'm new to the magic lantern forum I have development skills in multiple languages I'd like to have a crack at porting ML to the canon 2000D I have read that it would work similar to the 4000D can anyone help me by pointing me in the direction I need to go in I have c family coding skills so given enough support I feel confident that I may be able to achieve a working port to the 2000D if anyone has any advise as to what I need to do to begin porting that would be great thanks
+
+--- Post 22 by nikfreak () ---
+Yes, the 2000D, that's good. Please follow:
+
+https://www.magiclantern.fm/forum/index.php?topic=16534.0 (https://www.magiclantern.fm/forum/index.php?topic=16534.0)
+
+Once you got a rom dump, please provide me a link via private short message (no public links on forum!!!). There's several ways you can start porting (https://www.magiclantern.fm/forum/index.php?topic=19417.0). Also use the search for "qemu", "stubs" etc.
+
+You will need to get comfortable with compiling, using bitbucket (creating branches etc.) and spending private time....
+
+--- Post 23 by copycatthemc () ---
+Thanks that's great I'll spend time getting upto speed I have experience of compiling in dev & borland c++ and doing a bit of objective c in xcode a few years back. I've just ordered an eos m for running ML on so I can Learn how it runs and while using and enjoying it also probing it attempting to help port to the 2000D based on the 4000D work I also bought it for its features and lua scripts/modules I intend to use it for 360 hdri panorama light mapping for my hdri cube maps for use in my diy vr/ar development volumetric studio which I'm building for my personal hobby I would like to be able to get magic lantern to work with Wifi SD cards for streaming video data back and forth to pc synced and calibrated with depth data from an xbox 360 kinect v1 and xbox one kinect V2 to create a cheap high texture quality volumetric RGBD videogramtry camera array (Volumetric stage), and to link to PC and smartphone via wifi SD card adaptor would be the way to do if usb cant on the EOS M will never stream live video data I saw that A13X has some code for working towards getting ML to install on  a wifi capable sd card without destroying the Toshiba wifi sd card settings files. something I've bought is a cheap unbranded wifi card in the hope that we might get some kind of interface via wifi and wifi sd cards it would take me a long time but if I could get a calibrated video feed and kinect working together using PC and android/iOS app from something as feature rich and affordable as the eos m if this idea would be possible to achieve, maybe I could create the augmented reality app that I would like to make that uses GOOGLE ARCORE enabled photogrametry and videogrammetry app with the EOS M connected through an app potentially opening up the processing power screen and peripherals of the digital revolution and the gyroscope accelerometer and compass built of the location based data gathering revolution turning our smartphones into magic lantern extensions...that's a happy nod at the forum post I saw somewhere about cameras running android might get me the Samsung android dslr   just a curiosity what happened to the running ML booted linux kernel I saw out there that was very very interesting.....
+
+--- Post 24 by franmo2003 () ---
+Hello, It is known how long it takes for the magic lantern version to be released in the canon eos 4000D?
+Thanks
+
+--- Post 25 by Walter Schulz () ---
+If you start now: 2023, give or take.
+https://www.magiclantern.fm/forum/index.php?topic=19737.msg225763#msg225763 (https://www.magiclantern.fm/forum/index.php?topic=19737.msg225763#msg225763)
+=== page25.html ===
+Found 0 post blocks

@@ -1,0 +1,740 @@
+{
+  "Sync-SDCard.ps1": {
+    "mtime": 1793489794.8921962,
+    "seen": 1793490188.022628,
+    "ast_hash": "e4406cb4163a426cfb3330f60bfcab54",
+    "semantic_hash": ""
+  },
+  "docs/boot-d45-ch.c": {
+    "mtime": 1792882045.8833404,
+    "seen": 1793490188.022628,
+    "ast_hash": "561f0357a277ac32c17128a528e596ce",
+    "semantic_hash": ""
+  },
+  "docs/boot-d45.c": {
+    "mtime": 1792882046.4209876,
+    "seen": 1793490188.022628,
+    "ast_hash": "44a2c704988c6fc4107afba0f1316690",
+    "semantic_hash": ""
+  },
+  "docs/build_fir.py": {
+    "mtime": 1792924250.6546478,
+    "seen": 1793490188.022628,
+    "ast_hash": "bec3edc64ee94603c6d8338c50ee23fa",
+    "semantic_hash": ""
+  },
+  "docs/compute_sig.py": {
+    "mtime": 1792881337.633381,
+    "seen": 1793490188.022628,
+    "ast_hash": "723746efef04fcb625df79165a54e092",
+    "semantic_hash": ""
+  },
+  "docs/decrypt_40D105_flasher.c": {
+    "mtime": 1792881623.3977418,
+    "seen": 1793490188.022628,
+    "ast_hash": "da5b1f782d1ffb0fb41fa704b6b99233",
+    "semantic_hash": ""
+  },
+  "docs/decrypt_fw2.c": {
+    "mtime": 1792881622.1559033,
+    "seen": 1793490188.022628,
+    "ast_hash": "60ca7e6bc7d1bdc12856cc1713dc39ba",
+    "semantic_hash": ""
+  },
+  "docs/dump_fir.py": {
+    "mtime": 1792881335.9419267,
+    "seen": 1793490188.022628,
+    "ast_hash": "a6308d2261a48b4ff95a01ede38ca4e3",
+    "semantic_hash": ""
+  },
+  "docs/dumper.c": {
+    "mtime": 1792881187.9294019,
+    "seen": 1793490188.022628,
+    "ast_hash": "235db33a788e5372ce3081701af32b06",
+    "semantic_hash": ""
+  },
+  "docs/fir_tool2.py": {
+    "mtime": 1792881336.5068195,
+    "seen": 1793490188.022628,
+    "ast_hash": "4ba1c3bba57285b3f553ab2b16e59fd3",
+    "semantic_hash": ""
+  },
+  "docs/firmware.h": {
+    "mtime": 1792881189.0623057,
+    "seen": 1793490188.022628,
+    "ast_hash": "2cfb48a4f1fecac2ffe79f296e64faa2",
+    "semantic_hash": ""
+  },
+  "docs/io_decrypt.c": {
+    "mtime": 1792881624.4481988,
+    "seen": 1793490188.022628,
+    "ast_hash": "477731c2a2431eecddafadc7de225e6c",
+    "semantic_hash": ""
+  },
+  "docs/ofir_tool.py": {
+    "mtime": 1792881337.087557,
+    "seen": 1793490188.022628,
+    "ast_hash": "02d40e527bee833b2171886562e582be",
+    "semantic_hash": ""
+  },
+  "docs/pack-fir.c": {
+    "mtime": 1792881187.3667996,
+    "seen": 1793490188.022628,
+    "ast_hash": "66a870fb91606294696e1a9741c20a0f",
+    "semantic_hash": ""
+  },
+  "docs/platform_1300D.110_consts.h": {
+    "mtime": 1792881190.2298536,
+    "seen": 1793490188.022628,
+    "ast_hash": "e36d6a35d852820a72a5f86b6b5d25d8",
+    "semantic_hash": ""
+  },
+  "docs/platform_1300D.110_internals.h": {
+    "mtime": 1792881191.3779597,
+    "seen": 1793490188.022628,
+    "ast_hash": "bf232c043ea4838a6d8f0faa605d07ae",
+    "semantic_hash": ""
+  },
+  "docs/reboot-dumper.c": {
+    "mtime": 1792882045.1862545,
+    "seen": 1793490188.022628,
+    "ast_hash": "e4e25259748a57978993b083dd9c9a10",
+    "semantic_hash": ""
+  },
+  "liveSDCard/Sync-SDCard.ps1": {
+    "mtime": 1793489809.8346856,
+    "seen": 1793490188.022628,
+    "ast_hash": "e4406cb4163a426cfb3330f60bfcab54",
+    "semantic_hash": ""
+  },
+  "liveSDCard/make_bootable.py": {
+    "mtime": 1793460989.0120032,
+    "seen": 1793490188.022628,
+    "ast_hash": "59a8513f909e099847ccffc2e42bb429",
+    "semantic_hash": ""
+  },
+  "patch_btns.py": {
+    "mtime": 1793435277.7638338,
+    "seen": 1793490188.022628,
+    "ast_hash": "79a88c0a83486a1396ff7e7610556d45",
+    "semantic_hash": ""
+  },
+  "patch_dma.py": {
+    "mtime": 1793401377.1161954,
+    "seen": 1793490188.022628,
+    "ast_hash": "9f2297d3320b4eac7b9b4ea5457c6cfa",
+    "semantic_hash": ""
+  },
+  "patch_doit.py": {
+    "mtime": 1793401561.9694035,
+    "seen": 1793490188.022628,
+    "ast_hash": "c77aad74b017f0a70b4c2c156a670ae8",
+    "semantic_hash": ""
+  },
+  "patch_fast.py": {
+    "mtime": 1793401012.1660771,
+    "seen": 1793490188.022628,
+    "ast_hash": "ee7e7b7ccac81bbb8f144dbd96490c25",
+    "semantic_hash": ""
+  },
+  "patch_gui.py": {
+    "mtime": 1793435307.5003574,
+    "seen": 1793490188.022628,
+    "ast_hash": "f9783091add56c390dffbf11dc827310",
+    "semantic_hash": ""
+  },
+  "patch_vsnprintf.py": {
+    "mtime": 1793401908.975723,
+    "seen": 1793490188.022628,
+    "ast_hash": "6f4d05251dabaf228c639ab0ed27e3d3",
+    "semantic_hash": ""
+  },
+  "platform/4000D.100/cfn.c": {
+    "mtime": 1792880565.8446572,
+    "seen": 1793490188.022628,
+    "ast_hash": "23da7a4d5ebfe7f40e7c1d8a8b9ffb33",
+    "semantic_hash": ""
+  },
+  "platform/4000D.100/consts.h": {
+    "mtime": 1793484442.901491,
+    "seen": 1793490188.022628,
+    "ast_hash": "466ab647ace0f04833e045c9170699ca",
+    "semantic_hash": ""
+  },
+  "platform/4000D.100/features.h": {
+    "mtime": 1792880565.8446572,
+    "seen": 1793490188.022628,
+    "ast_hash": "a34cd962fd8cbbaf9b8db34758856b5d",
+    "semantic_hash": ""
+  },
+  "platform/4000D.100/function_overrides.c": {
+    "mtime": 1792884506.402508,
+    "seen": 1793490188.022628,
+    "ast_hash": "32655d2244dbcda0ec39481593b33acd",
+    "semantic_hash": ""
+  },
+  "platform/4000D.100/gui.h": {
+    "mtime": 1792880565.8446572,
+    "seen": 1793490188.022628,
+    "ast_hash": "a6544f82801f118ce84df01360e667f3",
+    "semantic_hash": ""
+  },
+  "platform/4000D.100/include/platform/mvr.h": {
+    "mtime": 1792880565.8456569,
+    "seen": 1793490188.022628,
+    "ast_hash": "b66794a42705b3820f3907bc885656ab",
+    "semantic_hash": ""
+  },
+  "platform/4000D.100/include/platform/state-object.h": {
+    "mtime": 1793432431.1169558,
+    "seen": 1793490188.022628,
+    "ast_hash": "93aa115370b0f50020ac37eb7f5bd6f4",
+    "semantic_hash": ""
+  },
+  "platform/4000D.100/internals.h": {
+    "mtime": 1793432408.2225592,
+    "seen": 1793490188.022628,
+    "ast_hash": "e1b8e712fad1fc69aee21776822c516a",
+    "semantic_hash": ""
+  },
+  "platform/4000D.100/version.c": {
+    "mtime": 1793485320.1132493,
+    "seen": 1793490188.022628,
+    "ast_hash": "f07608350ae39816f16cbb87ffad5196",
+    "semantic_hash": ""
+  },
+  "scratch_find.py": {
+    "mtime": 1793401860.1774678,
+    "seen": 1793490188.022628,
+    "ast_hash": "b406c7b5883fd3b2ff3333214ede6e7d",
+    "semantic_hash": ""
+  },
+  "scripts/analyze_fir_header.py": {
+    "mtime": 1792881132.382343,
+    "seen": 1793490188.022628,
+    "ast_hash": "55306e7bda7e9d2bdc33e5718fe7c9ff",
+    "semantic_hash": ""
+  },
+  "scripts/apply_doit_self_update.py": {
+    "mtime": 1793395767.8469853,
+    "seen": 1793490188.022628,
+    "ast_hash": "911c8d8163683f8d3fcaf4a585184990",
+    "semantic_hash": ""
+  },
+  "scripts/apply_fixes.py": {
+    "mtime": 1793395094.536088,
+    "seen": 1793490188.022628,
+    "ast_hash": "5dea267bc6a377cf08718b28cec5af45",
+    "semantic_hash": ""
+  },
+  "scripts/bootflag_installer_payload.c": {
+    "mtime": 1792926014.202468,
+    "seen": 1793490188.022628,
+    "ast_hash": "ba6c6e71f6d71735929093d1f97dc56f",
+    "semantic_hash": ""
+  },
+  "scripts/check_2000d.py": {
+    "mtime": 1792882182.1053157,
+    "seen": 1793490188.022628,
+    "ast_hash": "62a41c80f0d84b4a180a8d5ae5bcb249",
+    "semantic_hash": ""
+  },
+  "scripts/check_makefile_caller.py": {
+    "mtime": 1792881674.482794,
+    "seen": 1793490188.022628,
+    "ast_hash": "e4e31588685a5424b5a9dddd94413c33",
+    "semantic_hash": ""
+  },
+  "scripts/check_payload_raw.py": {
+    "mtime": 1792881574.114101,
+    "seen": 1793490188.022628,
+    "ast_hash": "92ecc70e83fe9e582368240f038168c4",
+    "semantic_hash": ""
+  },
+  "scripts/check_run_qemu.py": {
+    "mtime": 1792882200.949589,
+    "seen": 1793490188.022628,
+    "ast_hash": "15c1eead46afec2beb679776ff665aec",
+    "semantic_hash": ""
+  },
+  "scripts/check_timemap.py": {
+    "mtime": 1792881033.6751282,
+    "seen": 1793490188.022628,
+    "ast_hash": "0cff0d0ca8d819dcc7e1711af47fad26",
+    "semantic_hash": ""
+  },
+  "scripts/compare_fir.py": {
+    "mtime": 1792882221.041622,
+    "seen": 1793490188.022628,
+    "ast_hash": "3e1df7ca90a4169b2ff537815ecef9a8",
+    "semantic_hash": ""
+  },
+  "scripts/dmp4000d_payload.c": {
+    "mtime": 1792883392.8742259,
+    "seen": 1793490188.022628,
+    "ast_hash": "8e1f3dc577286f3464f669898b9ca698",
+    "semantic_hash": ""
+  },
+  "scripts/download_arm_toolchain.py": {
+    "mtime": 1792881472.5138798,
+    "seen": 1793490188.022628,
+    "ast_hash": "3e9ccdea5c9569f80a8cfd033431792b",
+    "semantic_hash": ""
+  },
+  "scripts/download_fir.py": {
+    "mtime": 1792881052.3160906,
+    "seen": 1793490188.022628,
+    "ast_hash": "7ccfe6950140090ab595d04f71acd878",
+    "semantic_hash": ""
+  },
+  "scripts/download_official_fw.py": {
+    "mtime": 1792882545.2718277,
+    "seen": 1793490188.022628,
+    "ast_hash": "238e46489f61aebe92cb3e5cedfe065f",
+    "semantic_hash": ""
+  },
+  "scripts/emulate_dmp4000d.py": {
+    "mtime": 1792883536.2201738,
+    "seen": 1793490188.022628,
+    "ast_hash": "2d9e4d2f2d98e8a8a1b22ab6863020d9",
+    "semantic_hash": ""
+  },
+  "scripts/extract_payload.py": {
+    "mtime": 1792881837.2919848,
+    "seen": 1793490188.022628,
+    "ast_hash": "33800365262fe4db068acacbc699a9bb",
+    "semantic_hash": ""
+  },
+  "scripts/fetch_archives.py": {
+    "mtime": 1792880587.788219,
+    "seen": 1793490188.022628,
+    "ast_hash": "7485d93f8d99ad90706c3f76b1ff6a16",
+    "semantic_hash": ""
+  },
+  "scripts/fetch_canon_au.py": {
+    "mtime": 1792880944.2915964,
+    "seen": 1793490188.022628,
+    "ast_hash": "fa51fd3ecfd5eb9f8cb0c6679c292633",
+    "semantic_hash": ""
+  },
+  "scripts/fetch_canon_model.py": {
+    "mtime": 1792880904.2478864,
+    "seen": 1793490188.022628,
+    "ast_hash": "23e772158b3fa1aab034541df6efbca5",
+    "semantic_hash": ""
+  },
+  "scripts/fetch_eos_3000d_page.py": {
+    "mtime": 1792882439.4856918,
+    "seen": 1793490188.022628,
+    "ast_hash": "301bf3d42b6c9696b46b683bea4487db",
+    "semantic_hash": ""
+  },
+  "scripts/fetch_fir_tools.py": {
+    "mtime": 1792881329.405585,
+    "seen": 1793490188.022628,
+    "ast_hash": "97de3728e116de675489d69e5b9df8a7",
+    "semantic_hash": ""
+  },
+  "scripts/fetch_fw2_c.py": {
+    "mtime": 1792881611.8703976,
+    "seen": 1793490188.022628,
+    "ast_hash": "4b8089494b3cebdda50d80747a7929b2",
+    "semantic_hash": ""
+  },
+  "scripts/fetch_hk_canon.py": {
+    "mtime": 1792881010.1174157,
+    "seen": 1793490188.022628,
+    "ast_hash": "b6be9ced8869cb5b3822d83a3aa4249b",
+    "semantic_hash": ""
+  },
+  "scripts/fetch_installer_mk.py": {
+    "mtime": 1792881716.6050165,
+    "seen": 1793490188.022628,
+    "ast_hash": "598d7ed0e3e250ec8a28ba79f6bcbd59",
+    "semantic_hash": ""
+  },
+  "scripts/fetch_ml_sources.py": {
+    "mtime": 1792881179.5935285,
+    "seen": 1793490188.022628,
+    "ast_hash": "7fbafc8e33c5b9a50ae18c2df4a84ed6",
+    "semantic_hash": ""
+  },
+  "scripts/fetch_reboot_dumper.py": {
+    "mtime": 1792882035.898942,
+    "seen": 1793490188.022628,
+    "ast_hash": "cce864364bd89ee850bbb4723d046c58",
+    "semantic_hash": ""
+  },
+  "scripts/fetch_th_canon.py": {
+    "mtime": 1792882489.0790503,
+    "seen": 1793490188.022628,
+    "ast_hash": "56f28f617700dff626d10b390b0e86c3",
+    "semantic_hash": ""
+  },
+  "scripts/find_build_fir.py": {
+    "mtime": 1792881651.5044928,
+    "seen": 1793490188.022628,
+    "ast_hash": "671c93b168a713a7e57301f21e544b46",
+    "semantic_hash": ""
+  },
+  "scripts/find_build_fir_file.py": {
+    "mtime": 1792881767.5974967,
+    "seen": 1793490188.022628,
+    "ast_hash": "806d3a6466b4d8bb0d87ac7fba29ac98",
+    "semantic_hash": ""
+  },
+  "scripts/find_canon_fw.py": {
+    "mtime": 1792880788.580474,
+    "seen": 1793490188.022628,
+    "ast_hash": "accc9a5db67559b5470a87b54d4967c3",
+    "semantic_hash": ""
+  },
+  "scripts/find_err70.py": {
+    "mtime": 1793396037.63119,
+    "seen": 1793490188.022628,
+    "ast_hash": "24a71e6f8642ef4a7e3835b51a85fcd2",
+    "semantic_hash": ""
+  },
+  "scripts/find_fir_tools.py": {
+    "mtime": 1792881306.1163085,
+    "seen": 1793490188.022628,
+    "ast_hash": "f80d6ef5650deae8107cca01e3e30e53",
+    "semantic_hash": ""
+  },
+  "scripts/find_ptp.py": {
+    "mtime": 1793396523.2146251,
+    "seen": 1793490188.022628,
+    "ast_hash": "e76df163f71f9390b9c571f2b021cd87",
+    "semantic_hash": ""
+  },
+  "scripts/find_rescue_code.py": {
+    "mtime": 1792882017.101703,
+    "seen": 1793490188.022628,
+    "ast_hash": "a005a5d3864918ff277c36b397971141",
+    "semantic_hash": ""
+  },
+  "scripts/fix_histogram.py": {
+    "mtime": 1793395313.5431743,
+    "seen": 1793490188.022628,
+    "ast_hash": "76a27a93674dbc7d1e02ecc0ef94fb31",
+    "semantic_hash": ""
+  },
+  "scripts/get_polo_link.py": {
+    "mtime": 1792882392.938211,
+    "seen": 1793490188.022628,
+    "ast_hash": "438e6bf9121a66fc56ac3dbe11a7793f",
+    "semantic_hash": ""
+  },
+  "scripts/inspect_dmp4000d.py": {
+    "mtime": 1792881117.412662,
+    "seen": 1793490188.022628,
+    "ast_hash": "0cf056972bb3e22897a7aad20a5a50a9",
+    "semantic_hash": ""
+  },
+  "scripts/list_makefiles.py": {
+    "mtime": 1792881692.7128534,
+    "seen": 1793490188.022628,
+    "ast_hash": "e5bf22d70aa1f9c678b3371cb6a7f425",
+    "semantic_hash": ""
+  },
+  "scripts/make_bootable.py": {
+    "mtime": 1793460975.7776632,
+    "seen": 1793490188.022628,
+    "ast_hash": "59a8513f909e099847ccffc2e42bb429",
+    "semantic_hash": ""
+  },
+  "scripts/pack_4000d_fir.py": {
+    "mtime": 1792883324.068029,
+    "seen": 1793490188.022628,
+    "ast_hash": "08760c3308896c16ed53949de9c0122c",
+    "semantic_hash": ""
+  },
+  "scripts/parse_fir.py": {
+    "mtime": 1792881409.6875036,
+    "seen": 1793490188.022628,
+    "ast_hash": "6f5d169c889268ac074f8bf035ffee74",
+    "semantic_hash": ""
+  },
+  "scripts/parse_official_fir.py": {
+    "mtime": 1792882625.4609098,
+    "seen": 1793490188.022628,
+    "ast_hash": "e739389b5aead86a5eb4ed25fd79280f",
+    "semantic_hash": ""
+  },
+  "scripts/patch_ml_4000d.py": {
+    "mtime": 1792883263.6809812,
+    "seen": 1793490188.022628,
+    "ast_hash": "269e00c2eb7b487795cbe53b2a19f233",
+    "semantic_hash": ""
+  },
+  "scripts/patch_qemu_4000d.py": {
+    "mtime": 1792883197.296818,
+    "seen": 1793490188.022628,
+    "ast_hash": "aa26b7e0ad06c2e8b21775b5d12bdbb3",
+    "semantic_hash": ""
+  },
+  "scripts/patch_src_4000d.py": {
+    "mtime": 1792884034.479354,
+    "seen": 1793490188.022628,
+    "ast_hash": "e6c2a7669fe3ea03d39f2cf6fa6b03dd",
+    "semantic_hash": ""
+  },
+  "scripts/prepare_4000d_rom_and_resolve_stubs.py": {
+    "mtime": 1792884636.8107347,
+    "seen": 1793490188.022628,
+    "ast_hash": "3ee3c3f55f3e5adbaa2cdfa7c0cf9856",
+    "semantic_hash": ""
+  },
+  "scripts/ptp_smartphone_bootflag.py": {
+    "mtime": 1792959860.610269,
+    "seen": 1793490188.022628,
+    "ast_hash": "baa16424bb7045b30dbfcb094d96eb5b",
+    "semantic_hash": ""
+  },
+  "scripts/ptp_smartphone_disable_bootflag.py": {
+    "mtime": 1792959851.2674472,
+    "seen": 1793490188.022628,
+    "ast_hash": "5361aab9833db1329da3b48a4c53c695",
+    "semantic_hash": ""
+  },
+  "scripts/ptp_wifi_toggle_bootflag.py": {
+    "mtime": 1792933268.2913456,
+    "seen": 1793490188.022628,
+    "ast_hash": "4d71e51c6bb2c3f004a4b23f3654ada9",
+    "semantic_hash": ""
+  },
+  "scripts/read_1300d_entry.py": {
+    "mtime": 1792881923.245695,
+    "seen": 1793490188.022628,
+    "ast_hash": "3f915238f5f500bd9d39967d4faaabd8",
+    "semantic_hash": ""
+  },
+  "scripts/read_cam_py.py": {
+    "mtime": 1792881891.8627076,
+    "seen": 1793490188.022628,
+    "ast_hash": "b1b3de1bbbe6360b4472172b0e4ce831",
+    "semantic_hash": ""
+  },
+  "scripts/read_installer_mk.py": {
+    "mtime": 1792881734.7171392,
+    "seen": 1793490188.022628,
+    "ast_hash": "78c393e4c0596f112126b2a1106c463e",
+    "semantic_hash": ""
+  },
+  "scripts/read_model_h.py": {
+    "mtime": 1792882164.9982486,
+    "seen": 1793490188.022628,
+    "ast_hash": "d53940cb025d73bd0ee74f1d1a3f2af1",
+    "semantic_hash": ""
+  },
+  "scripts/read_model_list.py": {
+    "mtime": 1792881906.2344713,
+    "seen": 1793490188.022628,
+    "ast_hash": "5a62de3bd9d10e97cfd81bb141d84fa9",
+    "semantic_hash": ""
+  },
+  "scripts/run_fir_tool2_py3.py": {
+    "mtime": 1792882111.7678463,
+    "seen": 1793490188.022628,
+    "ast_hash": "c07130c3a585238aebc7c42ed162ae8f",
+    "semantic_hash": ""
+  },
+  "scripts/search_cdx_fw.py": {
+    "mtime": 1792881233.6147697,
+    "seen": 1793490188.022628,
+    "ast_hash": "432ff0c1dfcdc526b10453e6bb1ca9ff",
+    "semantic_hash": ""
+  },
+  "scripts/search_code_github.py": {
+    "mtime": 1792881960.510544,
+    "seen": 1793490188.022628,
+    "ast_hash": "d1f9592c2fadf7061a5641136732491e",
+    "semantic_hash": ""
+  },
+  "scripts/search_eos_c.py": {
+    "mtime": 1792882150.5107982,
+    "seen": 1793490188.022628,
+    "ast_hash": "2ca49b4abd490f33ed0ddffd616e7ca5",
+    "semantic_hash": ""
+  },
+  "scripts/search_github_tree.py": {
+    "mtime": 1792881147.9661448,
+    "seen": 1793490188.022628,
+    "ast_hash": "64681c550b940996f80aed8bf7ca556b",
+    "semantic_hash": ""
+  },
+  "scripts/search_heptapod_files.py": {
+    "mtime": 1792881987.8228474,
+    "seen": 1793490188.022628,
+    "ast_hash": "20bde2d2df3869a1a2e2770fdd349127",
+    "semantic_hash": ""
+  },
+  "scripts/search_installer_fir.py": {
+    "mtime": 1792881751.147508,
+    "seen": 1793490188.022628,
+    "ast_hash": "63fc65d41a0980b4d6c9602c9e7b1685",
+    "semantic_hash": ""
+  },
+  "scripts/search_qemu_eos.py": {
+    "mtime": 1792881875.9099648,
+    "seen": 1793490188.022628,
+    "ast_hash": "2d7e8b7f5058c5dcd0ce717ddfbcf50d",
+    "semantic_hash": ""
+  },
+  "scripts/search_simplified.py": {
+    "mtime": 1792881161.3965847,
+    "seen": 1793490188.022628,
+    "ast_hash": "879aa28590226f77e6e1c25cc2695e0a",
+    "semantic_hash": ""
+  },
+  "scripts/test_1100d_dec.py": {
+    "mtime": 1792882317.2602215,
+    "seen": 1793490188.022628,
+    "ast_hash": "8da31fd0b6dcb3b5dd27cc63a5c564c2",
+    "semantic_hash": ""
+  },
+  "scripts/test_canon_ca.py": {
+    "mtime": 1792880840.5850163,
+    "seen": 1793490188.022628,
+    "ast_hash": "0080fa60b81719b736c48108dd7bb325",
+    "semantic_hash": ""
+  },
+  "scripts/test_canon_redirect.py": {
+    "mtime": 1792882511.2829497,
+    "seen": 1793490188.022628,
+    "ast_hash": "a36074e76f6b55136e71b57df0527c95",
+    "semantic_hash": ""
+  },
+  "scripts/test_decompress.py": {
+    "mtime": 1792881800.1586218,
+    "seen": 1793490188.022628,
+    "ast_hash": "d0d7498f8cf59a6c570f27e58be98405",
+    "semantic_hash": ""
+  },
+  "scripts/update_doit.py": {
+    "mtime": 1793395112.6391878,
+    "seen": 1793490188.022628,
+    "ast_hash": "c90531b36c4b4bc0cdd2e5c9285e3bae",
+    "semantic_hash": ""
+  },
+  "scripts/update_init_ui.py": {
+    "mtime": 1793465706.5036063,
+    "seen": 1793490188.022628,
+    "ast_hash": "5c50064d9631991725940fb27bf6b4c2",
+    "semantic_hash": ""
+  },
+  "scripts/verify_autoexec_4000d_unicorn.py": {
+    "mtime": 1792921493.2973044,
+    "seen": 1793490188.022628,
+    "ast_hash": "83fe226eb632befed8435f69038c5de8",
+    "semantic_hash": ""
+  },
+  "scripts/verify_bootflag_payload_unicorn.py": {
+    "mtime": 1792926136.2279174,
+    "seen": 1793490188.022628,
+    "ast_hash": "f909d68df4e2703443d730b24fdc227f",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1793489890.2649055,
+    "seen": 1793490188.022628,
+    "ast_hash": "f011cf3ad20411be428c67d5067ee562",
+    "semantic_hash": ""
+  },
+  "docs/argon_audit_and_recommendations.md": {
+    "mtime": 1793489431.7594612,
+    "seen": 1793490188.022628,
+    "ast_hash": "87374f5c4fae1b6b508f0159e9c49141",
+    "semantic_hash": ""
+  },
+  "docs/canon_4000d_wifi_bootflag_procedure.md": {
+    "mtime": 1792959894.0624857,
+    "seen": 1793490188.022628,
+    "ast_hash": "ba331bd3d5a231a41c410b7d39b4e0bd",
+    "semantic_hash": ""
+  },
+  "docs/cryptographic_verification_and_hashes.md": {
+    "mtime": 1793489684.6452024,
+    "seen": 1793490188.022628,
+    "ast_hash": "9606f8470e83166d0d56024229a430fe",
+    "semantic_hash": ""
+  },
+  "docs/dmp4000d_payload_analysis.md": {
+    "mtime": 1792882692.4361012,
+    "seen": 1793490188.022628,
+    "ast_hash": "2e1525678c91c2aca41a44503189e945",
+    "semantic_hash": ""
+  },
+  "docs/dont_panic_troubleshooting.md": {
+    "mtime": 1793489615.4973674,
+    "seen": 1793490188.022628,
+    "ast_hash": "ed593bfa88f057e70e5c200f7515a75e",
+    "semantic_hash": ""
+  },
+  "docs/exfat_roadmap_and_verification.md": {
+    "mtime": 1793489637.5602536,
+    "seen": 1793490188.022628,
+    "ast_hash": "a77c18a5c1d3b5e6d07d9f486bd8631a",
+    "semantic_hash": ""
+  },
+  "docs/firmware_and_threads_report.md": {
+    "mtime": 1792881466.8323197,
+    "seen": 1793490188.022628,
+    "ast_hash": "4a466e30b22df42fd498186b9138a382",
+    "semantic_hash": ""
+  },
+  "docs/guide_stock_to_live.md": {
+    "mtime": 1793489594.7104337,
+    "seen": 1793490188.022628,
+    "ast_hash": "cb81d8e3a3b2cf699123c814d8e76868",
+    "semantic_hash": ""
+  },
+  "docs/ml_1300d_4000d_architecture.md": {
+    "mtime": 1793489471.5453382,
+    "seen": 1793490188.022628,
+    "ast_hash": "465ccd88dda94b0d7a4704b0261014ef",
+    "semantic_hash": ""
+  },
+  "docs/ml_4000d_compilation_and_qemu_report.md": {
+    "mtime": 1792884607.773169,
+    "seen": 1793490188.022628,
+    "ast_hash": "d7993e5dd318af871289cd755c7ad4fb",
+    "semantic_hash": ""
+  },
+  "docs/ml_forum_announcement.md": {
+    "mtime": 1793489706.706324,
+    "seen": 1793490188.022628,
+    "ast_hash": "a3a75eff07311c957a9f35f4b4975615",
+    "semantic_hash": ""
+  },
+  "docs/rea_and_toolchain_report.md": {
+    "mtime": 1793489768.8631916,
+    "seen": 1793490188.022628,
+    "ast_hash": "eb1d20ad181b15b75dd91e1401d11867",
+    "semantic_hash": ""
+  },
+  "docs/rea_dmp4000d_disassembly_and_emulation.md": {
+    "mtime": 1792884810.4040236,
+    "seen": 1793490188.022628,
+    "ast_hash": "dfe4153d3bd570234bf9afc778aeab6f",
+    "semantic_hash": ""
+  },
+  "forum_thread_23369.txt": {
+    "mtime": 1792880202.056632,
+    "seen": 1793490188.022628,
+    "ast_hash": "baececaa7a3b955c9ad805ea578b2470",
+    "semantic_hash": ""
+  },
+  "handoff.md": {
+    "mtime": 1793489570.1621726,
+    "seen": 1793490188.022628,
+    "ast_hash": "e4dcee3c9c87732d7e05bc418f9994c3",
+    "semantic_hash": ""
+  },
+  "rea_readme.md": {
+    "mtime": 1792880038.9601023,
+    "seen": 1793490188.022628,
+    "ast_hash": "e9956e75772823b6dd1afb38c012c375",
+    "semantic_hash": ""
+  }
+}
