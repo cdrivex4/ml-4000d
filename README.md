@@ -47,8 +47,35 @@ Because the 4000D validates HMAC signatures on `.FIR` update files, standard FIR
 *(To disable the bootflag at any time, run `python scripts/ptp_smartphone_disable_bootflag.py <CAMERA_IP>`)*.
 
 ### Step 2: Make the SD Card Bootable
-1. Format your SD card ($\le 32\text{ GB}$) as **FAT32** with the volume label **`BOOTDISK`**.
-2. Write the string **`EOS_DEVELOP`** at byte offset `0x40` (and `BOOTDISK` at offset `0x44`) of the boot sector (using `EOScard` or standard `dd`).
+Use either the included Windows GUI utility or the cross-platform Python script:
+
+- **Option A (Windows GUI - Recommended):**
+  1. Open [`tools/card_prep/EOScard.exe`](tools/card_prep/).
+  2. Select your SD card drive letter.
+  3. Ensure both **BOOTDISK** and **EOS_DEVELOP** are checked.
+  4. Click the **Magic Lantern** logo or **Save**.
+  *(EOScard is authored by Pel; official website & updates at [https://pel.hu/eoscard/](https://pel.hu/eoscard/))*.
+
+- **Option B (Cross-Platform Python - Linux / macOS / Windows):**
+  Run our standalone Python card preparation script:
+  ```bash
+  python scripts/make_bootable.py <DRIVE_LETTER_OR_DEVICE>
+  ```
+
+---
+
+## 🧰 Bundled Tools & Card Preparation Utilities
+
+Everything needed to bootstrap and test the camera is bundled directly in this repository:
+
+| Tool / Script | Location | Purpose & Description |
+| :--- | :--- | :--- |
+| **`EOScard.exe`** | [`tools/card_prep/EOScard.exe`](tools/card_prep/) | Standard Windows GUI utility by Pel ([pel.hu](https://pel.hu/eoscard/)) to format and write ML boot flags to SD cards. |
+| **`mlinstall.exe`** | [`tools/card_prep/mlinstall.exe`](tools/card_prep/) | Automated Magic Lantern setup assistant. |
+| **`make_bootable.py`** | [`scripts/make_bootable.py`](scripts/make_bootable.py) | Standalone pure-Python script to inject `EOS_DEVELOP` and `BOOTDISK` on Linux, macOS, and Windows. |
+| **`ptp_smartphone_bootflag.py`** | [`scripts/ptp_smartphone_bootflag.py`](scripts/ptp_smartphone_bootflag.py) | Non-destructive Wi-Fi PTP/IP script to enable `BOOT=1` on the camera without risky FIR flashing. |
+| **`ptp_smartphone_disable_bootflag.py`** | [`scripts/ptp_smartphone_disable_bootflag.py`](scripts/ptp_smartphone_disable_bootflag.py) | Wi-Fi PTP/IP script to disable the bootflag and restore factory `BOOT=0`. |
+| **`download_arm_toolchain.py`** | [`scripts/download_arm_toolchain.py`](scripts/download_arm_toolchain.py) | Fetches and unpacks the portable xPack ARM GCC 13.3.1 toolchain for compiling from source. |
 
 ### Step 3: Copy Magic Lantern Files
 1. Copy the precompiled [`liveSDCard/autoexec.bin`](liveSDCard/autoexec.bin) to the root of the SD card.

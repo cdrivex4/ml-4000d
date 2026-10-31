@@ -4,7 +4,8 @@ import urllib.request
 import zipfile
 
 URL = "https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/download/v13.3.1-1.1/xpack-arm-none-eabi-gcc-13.3.1-1.1-win32-x64.zip"
-TOOLS_DIR = r"d:\Dev\REverSE\4000D\tools"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+TOOLS_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "tools"))
 ZIP_PATH = os.path.join(TOOLS_DIR, "arm-none-eabi-gcc.zip")
 
 def download_file(url, dest):

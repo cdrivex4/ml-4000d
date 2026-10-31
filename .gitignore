@@ -14,7 +14,8 @@ update-procedure-pdf/
 *.dumper
 
 # Toolchains, Emulators & Heavy Environments
-tools/
+tools/*
+!tools/card_prep/
 ghidra/
 qemu-eos/
 rea/
@@ -43,7 +44,9 @@ liveSDCard/ML/SETTINGS/*.cfg
 *.map
 *.elf
 *.exe
+!tools/card_prep/*.exe
 *.dll
+!tools/card_prep/*.dll
 *.zip
 *.tar.gz
 *.pyc

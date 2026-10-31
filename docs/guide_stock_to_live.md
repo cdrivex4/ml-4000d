@@ -44,14 +44,22 @@ Because the 4000D firmware validates HMAC-SHA1 signatures on `.FIR` files, stand
 ### Step 2: Prepare the SD Card
 Canon's bootloader inspects the master boot record / volume boot record for specific Magic Lantern markers before loading `autoexec.bin`:
 
-1. Format the SD card as **FAT32** with default cluster size.
-2. Label the volume as **`BOOTDISK`**.
-3. Use `EOScard` (Windows) or a Python script to write the ASCII string **`EOS_DEVELOP`** at byte offset `0x40` (and `BOOTDISK` at offset `0x44`) of sector 0.
-   - Alternatively, on Linux/macOS:
+1. Format the SD card ($\le 32\text{ GB}$) as **FAT32**.
+2. **Using the Bundled Windows GUI Utility (`EOScard`):**
+   - Launch [`tools/card_prep/EOScard.exe`](tools/card_prep/) (authored by Pel, [https://pel.hu/eoscard/](https://pel.hu/eoscard/)).
+   - Select your SD card drive letter.
+   - Verify that **BOOTDISK** and **EOS_DEVELOP** are checked.
+   - Click the **Magic Lantern** logo or **Save**.
+3. **Using the Bundled Cross-Platform Python Script (Linux / macOS / Windows):**
+   - Run from terminal:
      ```bash
-     echo -n "EOS_DEVELOP" | dd of=/dev/sdX bs=1 seek=64 count=11 conv=notrunc
-     echo -n "BOOTDISK"    | dd of=/dev/sdX bs=1 seek=76 count=8 conv=notrunc
+     python scripts/make_bootable.py <DRIVE_LETTER_OR_DEVICE>
      ```
+4. Alternatively, on Linux/macOS using raw `dd`:
+   ```bash
+   echo -n "EOS_DEVELOP" | dd of=/dev/sdX bs=1 seek=64 count=11 conv=notrunc
+   echo -n "BOOTDISK"    | dd of=/dev/sdX bs=1 seek=76 count=8 conv=notrunc
+   ```
 
 ---
 

@@ -276,9 +276,9 @@
     "semantic_hash": ""
   },
   "scripts/download_arm_toolchain.py": {
-    "mtime": 1792881472.5138798,
-    "seen": 1793490188.022628,
-    "ast_hash": "3e9ccdea5c9569f80a8cfd033431792b",
+    "mtime": 1793490959.1536584,
+    "seen": 1793491084.394933,
+    "ast_hash": "9d2f3b90948fb61eef95747f403043ec",
     "semantic_hash": ""
   },
   "scripts/download_fir.py": {
@@ -636,9 +636,9 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1793489890.2649055,
-    "seen": 1793490188.022628,
-    "ast_hash": "f011cf3ad20411be428c67d5067ee562",
+    "mtime": 1793490988.869012,
+    "seen": 1793491084.394933,
+    "ast_hash": "937d7237aae1a37e61c7ba3fe946fd64",
     "semantic_hash": ""
   },
   "docs/argon_audit_and_recommendations.md": {
@@ -684,9 +684,9 @@
     "semantic_hash": ""
   },
   "docs/guide_stock_to_live.md": {
-    "mtime": 1793489594.7104337,
-    "seen": 1793490188.022628,
-    "ast_hash": "cb81d8e3a3b2cf699123c814d8e76868",
+    "mtime": 1793491016.5269089,
+    "seen": 1793491084.394933,
+    "ast_hash": "a0770a38d53079cfefd2d2204a6862be",
     "semantic_hash": ""
   },
   "docs/ml_1300d_4000d_architecture.md": {
@@ -735,6 +735,12 @@
     "mtime": 1792880038.9601023,
     "seen": 1793490188.022628,
     "ast_hash": "e9956e75772823b6dd1afb38c012c375",
+    "semantic_hash": ""
+  },
+  "tools/card_prep/README.md": {
+    "mtime": 1793490874.613569,
+    "seen": 1793491084.394933,
+    "ast_hash": "db8928f979c5b405d2a0203dbe18c1ea",
     "semantic_hash": ""
   }
 }

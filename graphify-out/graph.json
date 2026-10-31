@@ -1,7 +1,7 @@
 {
+  "hyperedges": [],
   "input_tokens": 0,
   "output_tokens": 0,
-  "failed_sources": [],
   "nodes": [
     {
       "id": "sync_sdcard",
@@ -1089,7 +1089,7 @@
       "label": "download_file()",
       "file_type": "code",
       "source_file": "scripts/download_arm_toolchain.py",
-      "source_location": "L10",
+      "source_location": "L11",
       "_callable": true,
       "_origin": "ast"
     },
@@ -1098,7 +1098,7 @@
       "label": "extract_zip()",
       "file_type": "code",
       "source_file": "scripts/download_arm_toolchain.py",
-      "source_location": "L29",
+      "source_location": "L30",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2283,12 +2283,21 @@
       "_origin": "ast"
     },
     {
+      "id": "readme_bundled_tools_card_preparation_utilities",
+      "label": "🧰 Bundled Tools & Card Preparation Utilities",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "README.md",
+      "source_location": "L67",
+      "_origin": "ast"
+    },
+    {
       "id": "readme_step_3_copy_magic_lantern_files",
       "label": "Step 3: Copy Magic Lantern Files",
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "README.md",
-      "source_location": "L53",
+      "source_location": "L80",
       "_origin": "ast"
     },
     {
@@ -2297,7 +2306,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "README.md",
-      "source_location": "L58",
+      "source_location": "L85",
       "_origin": "ast"
     },
     {
@@ -2306,7 +2315,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "README.md",
-      "source_location": "L72",
+      "source_location": "L99",
       "_origin": "ast"
     },
     {
@@ -2315,7 +2324,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "README.md",
-      "source_location": "L84",
+      "source_location": "L111",
       "_origin": "ast"
     },
     {
@@ -2324,7 +2333,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "README.md",
-      "source_location": "L93",
+      "source_location": "L120",
       "_origin": "ast"
     },
     {
@@ -2333,7 +2342,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "README.md",
-      "source_location": "L100",
+      "source_location": "L127",
       "_origin": "ast"
     },
     {
@@ -3494,7 +3503,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/guide_stock_to_live.md",
-      "source_location": "L58",
+      "source_location": "L66",
       "_origin": "ast"
     },
     {
@@ -3503,7 +3512,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/guide_stock_to_live.md",
-      "source_location": "L75",
+      "source_location": "L83",
       "_origin": "ast"
     },
     {
@@ -3512,7 +3521,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/guide_stock_to_live.md",
-      "source_location": "L82",
+      "source_location": "L90",
       "_origin": "ast"
     },
     {
@@ -3521,7 +3530,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/guide_stock_to_live.md",
-      "source_location": "L91",
+      "source_location": "L99",
       "_origin": "ast"
     },
     {
@@ -3530,7 +3539,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/guide_stock_to_live.md",
-      "source_location": "L99",
+      "source_location": "L107",
       "_origin": "ast"
     },
     {
@@ -4701,6 +4710,87 @@
       "node_kind": "heading",
       "source_file": "rea_readme.md",
       "source_location": "L412",
+      "_origin": "ast"
+    },
+    {
+      "id": "tools_card_prep_readme",
+      "label": "card_prep/README.md",
+      "file_type": "document",
+      "node_kind": "page",
+      "source_file": "tools/card_prep/README.md",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "tools_card_prep_readme_sd_card_preparation_tools_utilities",
+      "label": "SD Card Preparation Tools & Utilities",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "tools/card_prep/README.md",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "tools_card_prep_readme_included_utilities",
+      "label": "🛠️ Included Utilities",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "tools/card_prep/README.md",
+      "source_location": "L7",
+      "_origin": "ast"
+    },
+    {
+      "id": "tools_card_prep_readme_1_eoscard_exe_windows_gui",
+      "label": "1. `EOScard.exe` (Windows GUI)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "tools/card_prep/README.md",
+      "source_location": "L9",
+      "_origin": "ast"
+    },
+    {
+      "id": "tools_card_prep_readme_how_to_use_eoscard",
+      "label": "How to Use EOScard:",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "tools/card_prep/README.md",
+      "source_location": "L14",
+      "_origin": "ast"
+    },
+    {
+      "id": "tools_card_prep_readme_2_mlinstall_exe_windows_assistant",
+      "label": "2. `mlinstall.exe` (Windows Assistant)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "tools/card_prep/README.md",
+      "source_location": "L24",
+      "_origin": "ast"
+    },
+    {
+      "id": "tools_card_prep_readme_3_cross_platform_alternative_scripts_make_bootable_py_linux_macos_windows",
+      "label": "3. Cross-Platform Alternative: `scripts/make_bootable.py` (Linux / macOS / Windows)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "tools/card_prep/README.md",
+      "source_location": "L29",
+      "_origin": "ast"
+    },
+    {
+      "id": "tools_card_prep_readme_checksums_for_verification",
+      "label": "🔒 Checksums for Verification",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "tools/card_prep/README.md",
+      "source_location": "L38",
+      "_origin": "ast"
+    },
+    {
+      "id": "tools_card_prep_readme_credits",
+      "label": "🎖️ Credits",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "tools/card_prep/README.md",
+      "source_location": "L49",
       "_origin": "ast"
     }
   ],
@@ -6978,7 +7068,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/download_arm_toolchain.py",
-      "source_location": "L10",
+      "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -6988,7 +7078,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/download_arm_toolchain.py",
-      "source_location": "L29",
+      "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9565,12 +9655,32 @@
       "_origin": "ast"
     },
     {
-      "source": "readme_quick_start_how_to_get_it_running",
+      "source": "readme",
+      "target": "d_dev_reverse_4000d_tools_card_prep_md",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L53",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "readme_magic_lantern_for_canon_eos_4000d_rebel_t100_eos_3000d",
+      "target": "readme_bundled_tools_card_preparation_utilities",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L67",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "readme_bundled_tools_card_preparation_utilities",
       "target": "readme_step_3_copy_magic_lantern_files",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L53",
+      "source_location": "L80",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9580,17 +9690,17 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L55",
+      "source_location": "L82",
       "weight": 1.0,
       "_origin": "ast"
     },
     {
-      "source": "readme_quick_start_how_to_get_it_running",
+      "source": "readme_bundled_tools_card_preparation_utilities",
       "target": "readme_step_4_power_on_operating_controls",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L58",
+      "source_location": "L85",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9600,7 +9710,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L65",
+      "source_location": "L92",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9610,7 +9720,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L66",
+      "source_location": "L93",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9620,7 +9730,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L67",
+      "source_location": "L94",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9630,7 +9740,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L68",
+      "source_location": "L95",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9640,7 +9750,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L72",
+      "source_location": "L99",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9650,7 +9760,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L80",
+      "source_location": "L107",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9660,7 +9770,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L84",
+      "source_location": "L111",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9670,7 +9780,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L93",
+      "source_location": "L120",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9680,7 +9790,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L100",
+      "source_location": "L127",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -10885,12 +10995,22 @@
       "_origin": "ast"
     },
     {
+      "source": "docs_guide_stock_to_live",
+      "target": "d_dev_reverse_4000d_docs_tools_card_prep_md",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/guide_stock_to_live.md",
+      "source_location": "L49",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
       "source": "docs_guide_stock_to_live_2_step_by_step_procedure",
       "target": "docs_guide_stock_to_live_step_3_install_magic_lantern_files",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/guide_stock_to_live.md",
-      "source_location": "L58",
+      "source_location": "L66",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -10900,7 +11020,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/guide_stock_to_live.md",
-      "source_location": "L75",
+      "source_location": "L83",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -10910,7 +11030,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/guide_stock_to_live.md",
-      "source_location": "L82",
+      "source_location": "L90",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -10920,7 +11040,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/guide_stock_to_live.md",
-      "source_location": "L91",
+      "source_location": "L99",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -10930,7 +11050,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/guide_stock_to_live.md",
-      "source_location": "L99",
+      "source_location": "L107",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -12851,6 +12971,86 @@
       "confidence": "EXTRACTED",
       "source_file": "rea_readme.md",
       "source_location": "L418",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tools_card_prep_readme",
+      "target": "tools_card_prep_readme_sd_card_preparation_tools_utilities",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tools/card_prep/README.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tools_card_prep_readme_sd_card_preparation_tools_utilities",
+      "target": "tools_card_prep_readme_included_utilities",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tools/card_prep/README.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tools_card_prep_readme_included_utilities",
+      "target": "tools_card_prep_readme_1_eoscard_exe_windows_gui",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tools/card_prep/README.md",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tools_card_prep_readme_1_eoscard_exe_windows_gui",
+      "target": "tools_card_prep_readme_how_to_use_eoscard",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tools/card_prep/README.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tools_card_prep_readme_included_utilities",
+      "target": "tools_card_prep_readme_2_mlinstall_exe_windows_assistant",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tools/card_prep/README.md",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tools_card_prep_readme_included_utilities",
+      "target": "tools_card_prep_readme_3_cross_platform_alternative_scripts_make_bootable_py_linux_macos_windows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tools/card_prep/README.md",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tools_card_prep_readme_sd_card_preparation_tools_utilities",
+      "target": "tools_card_prep_readme_checksums_for_verification",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tools/card_prep/README.md",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tools_card_prep_readme_sd_card_preparation_tools_utilities",
+      "target": "tools_card_prep_readme_credits",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tools/card_prep/README.md",
+      "source_location": "L49",
       "weight": 1.0,
       "_origin": "ast"
     }
