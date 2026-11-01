@@ -68,7 +68,7 @@ Use either the included Windows GUI utility or the cross-platform Python script:
 
 ### Step 3: Copy Magic Lantern Files & Sync Discipline
 1. **Log Protection & Sync Safety:** If running tests, always use the included [`liveSDCard/Sync-SDCard.ps1`](liveSDCard/Sync-SDCard.ps1) (or `doit.bat`) to sync. It automatically pulls and archives camera logs *first* before pushing updates, preventing accidental deletion of crash dumps. Photos in `DCIM/` are never touched.
-2. Copy [`liveSDCard/autoexec.bin`](liveSDCard/autoexec.bin) (SHA-256: `D0E361E594E67F166F75DE0CC41BC03098063780433978DCEF026C103F36F7B0`) to the root of the SD card.
+2. Copy [`liveSDCard/autoexec.bin`](liveSDCard/autoexec.bin) (SHA-256: `0A5C14EAA8A8A15DA08426BA16E03D7143054A0FA2FA685C79AA01BAA3B29C79`) to the root of the SD card.
 3. Copy the complete [`liveSDCard/ML/`](liveSDCard/ML/) directory to the root of the SD card.
 4. Safely eject the SD card before removing it from your PC.
 
@@ -86,6 +86,9 @@ Everything needed to bootstrap and test the camera is bundled directly in this r
 
 | Tool / Script | Location | Purpose & Description |
 | :--- | :--- | :--- |
+| **`automate_edmac_mapping.py`** | [`scripts/automate_edmac_mapping.py`](scripts/automate_edmac_mapping.py) | Autonomous reverse-engineering disassembler mapping EDMAC DMA channels, display objects, framebuffers, and SRM pools from ROM. |
+| **`generate_sym.py`** | [`scripts/generate_sym.py`](scripts/generate_sym.py) | Automated export symbol table generator converting `magiclantern` ELF symbols to `t100_100.sym` for dynamic module loading. |
+| **`scan_edmac.py`** | [`scripts/scan_edmac.py`](scripts/scan_edmac.py) | Capstone disassembler analyzing all 124 EDMAC callsites, write registers, and descriptors in firmware. |
 | **`EOScard.exe`** | [`tools/card_prep/EOScard.exe`](tools/card_prep/) | Standard Windows GUI utility by Pel ([pel.hu](https://pel.hu/eoscard/)) to format and write ML boot flags to SD cards. |
 | **`mlinstall.exe`** | [`tools/card_prep/mlinstall.exe`](tools/card_prep/) | Automated Magic Lantern setup assistant. |
 | **`make_bootable.py`** | [`scripts/make_bootable.py`](scripts/make_bootable.py) | Standalone pure-Python script to inject `EOS_DEVELOP` and `BOOTDISK` on Linux, macOS, and Windows. |
@@ -110,7 +113,8 @@ To verify the integrity of the provided release binary:
 
 | File | Size | MD5 | SHA-256 |
 | :--- | :--- | :--- | :--- |
-| **`liveSDCard/autoexec.bin`** | 404,256 bytes | `FFD53F4949492379A78571F436C1269C` | `D0E361E594E67F166F75DE0CC41BC03098063780433978DCEF026C103F36F7B0` |
+| **`liveSDCard/autoexec.bin`** | 404,256 bytes | `69642AFB96C294F270D6779CEF08A75C` | `0A5C14EAA8A8A15DA08426BA16E03D7143054A0FA2FA685C79AA01BAA3B29C79` |
+| **`liveSDCard/ML/MODULES/t100_100.sym`** | 34,815 bytes | `D03E39B243D63F8FC9144FBA847964BF` | `D4DACB0F69547B8CBC8C35E309D372BB722A1EE19D33F6AB51B78486AAAEAD02` |
 
 *Full cryptographic hashes table for firmware verification available in [`docs/cryptographic_verification_and_hashes.md`](docs/cryptographic_verification_and_hashes.md).*
 
