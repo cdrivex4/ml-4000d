@@ -49,7 +49,9 @@ Canon's bootloader inspects the master boot record / volume boot record for spec
    - Launch [`tools/card_prep/EOScard.exe`](tools/card_prep/) (authored by Pel, [https://pel.hu/eoscard/](https://pel.hu/eoscard/)).
    - Select your SD card drive letter.
    - Verify that **BOOTDISK** and **EOS_DEVELOP** are checked.
-   - Click the **Magic Lantern** logo or **Save**.
+   - Click **Save**.
+   - > [!WARNING]
+     > **Do NOT use the online download buttons inside EOScard!** Those buttons fetch generic ML builds for older models (550D/60D). If an `autoexec.bin` is placed on your card by EOScard, delete it or overwrite it with our custom 4000D binary in Step 3.
 3. **Using the Bundled Cross-Platform Python Script (Linux / macOS / Windows):**
    - Run from terminal:
      ```bash
@@ -63,10 +65,23 @@ Canon's bootloader inspects the master boot record / volume boot record for spec
 
 ---
 
-### Step 3: Install Magic Lantern Files
-1. Copy the compiled `autoexec.bin` (SHA-256: `D0E361E594E67F166F75DE0CC41BC03098063780433978DCEF026C103F36F7B0`) to the root of the SD card.
-2. Copy the complete **`ML/`** folder (containing `FONTS/`, `SETTINGS/`, and core resources) to the root of the SD card.
-3. Your SD card root structure should look like:
+### Step 3: Install Magic Lantern Files & The 3-Stage Sync Discipline
+When deploying builds and pulling logs, the order of operations is critical:
+
+1. **Pull Logs Before Writing (Stage 1):**
+   - If the camera previously ran, it created logs (`BOOT.LOG`, `DIAGS.LOG`, `BUTTONS.LOG`) in the root.
+   - **Never run a blind sync (like `robocopy /PURGE`)** before copying those logs to your PC; otherwise, the crash dumps and diagnostics will be wiped!
+   - Our launcher [`liveSDCard/Sync-SDCard.ps1`](liveSDCard/Sync-SDCard.ps1) (or `doit.bat`) handles this automatically by pulling and archiving logs first.
+   - User photos in `DCIM/` are strictly preserved and never modified.
+2. **Push & Verify Payload (Stage 2):**
+   - Copy [`liveSDCard/autoexec.bin`](liveSDCard/autoexec.bin) (SHA-256: `D0E361E594E67F166F75DE0CC41BC03098063780433978DCEF026C103F36F7B0`) to the root of the SD card.
+   - Copy the complete [`liveSDCard/ML/`](liveSDCard/ML/) directory to the root of the SD card.
+   - Verify that the card's `autoexec.bin` matches the SHA-256 hash of the repo build to ensure no stale cached binary is booted.
+3. **Archive Old Logs on Card (Stage 3):**
+   - Old logs on the card are moved into `ML/LOGS/archive/` so that the subsequent camera boot starts with clean timestamps.
+4. **Safely Eject (Stage 4):**
+   - Always safely unmount/eject the SD card before removing it from the PC. Dirty FAT32 volume flags will cause the camera bootloader to skip `autoexec.bin`.
+5. Your SD card root structure should look like:
    ```
    W:\
    ├── autoexec.bin
@@ -76,7 +91,6 @@ Canon's bootloader inspects the master boot record / volume boot record for spec
        ├── SETTINGS/
        └── LOGS/
    ```
-4. Safely eject the card from your PC.
 
 ---
 

@@ -16,8 +16,34 @@ This directory contains the essential utilities required to prepare, format, and
 2. Launch `EOScard.exe`.
 3. Select your SD card drive letter from the dropdown.
 4. Ensure the **BOOTDISK** and **EOS_DEVELOP** checkboxes are enabled.
-5. Click the **Magic Lantern** logo or **Save** button.
-6. Once completed, your card is ready for `autoexec.bin`.
+5. Click **Save** (or apply).
+
+> [!WARNING]
+> **CRITICAL ORDER OF OPERATIONS — DO NOT OVERWRITE `autoexec.bin`:**
+> `EOScard` has built-in buttons to download official Magic Lantern builds from the internet. **Do not download or extract generic builds through EOScard!** The 4000D requires our custom DIGIC 4+ DryOS 2.3 payload. If `EOScard` writes an `autoexec.bin` to your card, it is an incompatible build for older cameras.
+> **Rule:** Use `EOScard` *only* to write the boot sector markers (`BOOTDISK` / `EOS_DEVELOP`). **Always copy our custom 4000D `liveSDCard/autoexec.bin` and `ML/` folder AFTER running EOScard!**
+
+---
+
+## 🔄 The 3-Stage Sync Discipline: What to Sync, When, and Why
+
+During development and field testing, getting fresh logs without accidentally clobbering them or booting stale code is critical. This is why we created [`liveSDCard/Sync-SDCard.ps1`](../../liveSDCard/Sync-SDCard.ps1):
+
+1. **Stage 1 — PULL FIRST (Never Overwrite Blindly):**
+   - The camera writes diagnostic logs (`BOOT.LOG`, `DIAGS.LOG`, `BUTTONS.LOG`, `ST_*.LOG`) to the root of the card.
+   - **Hazard:** Naive scripts using `robocopy /PURGE` or `/MIR` will wipe the camera's new logs off the SD card before anyone can read them!
+   - **Rule:** The sync tool *always* pulls logs from the SD card to the PC archive first and snapshots them with a timestamp before performing any write operations.
+   - **Photo Safety:** The sync tool never touches or modifies the camera's `DCIM/` folder.
+
+2. **Stage 2 — PUSH & VERIFY (Preventing the Stale-Build Trap):**
+   - If Windows caches file writes or if a file copy fails silently, the camera boots the old binary, leading the developer to believe their new code failed when it never actually executed.
+   - **Rule:** The sync tool computes the SHA-256 hash of `autoexec.bin` on the PC and compares it directly against the SHA-256 of the binary on the SD card, verifying that the card binary is 100% identical.
+
+3. **Stage 3 — FINALIZE & ARCHIVE (Timestamp Rigor):**
+   - Old logs on the card are moved into `W:\ML\LOGS\archive\`. This guarantees that on the next boot, any log file on the card has a fresh timestamp relative to the latest flash time (`[FRESH: +XXXXs after build flash]`), eliminating ambiguity.
+
+4. **Stage 4 — SAFELY EJECT:**
+   - FAT32 volume dirty bits: Always safely eject the SD card before removing it from the card reader. Pulling a card during pending writes can leave the filesystem dirty, causing the 4000D bootloader to refuse to boot `autoexec.bin`.
 
 ---
 

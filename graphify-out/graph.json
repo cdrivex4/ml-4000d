@@ -2283,12 +2283,21 @@
       "_origin": "ast"
     },
     {
+      "id": "readme_step_3_copy_magic_lantern_files_sync_discipline",
+      "label": "Step 3: Copy Magic Lantern Files & Sync Discipline",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "README.md",
+      "source_location": "L69",
+      "_origin": "ast"
+    },
+    {
       "id": "readme_bundled_tools_card_preparation_utilities",
       "label": "🧰 Bundled Tools & Card Preparation Utilities",
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "README.md",
-      "source_location": "L67",
+      "source_location": "L77",
       "_origin": "ast"
     },
     {
@@ -2297,7 +2306,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "README.md",
-      "source_location": "L80",
+      "source_location": "L90",
       "_origin": "ast"
     },
     {
@@ -2306,7 +2315,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "README.md",
-      "source_location": "L85",
+      "source_location": "L95",
       "_origin": "ast"
     },
     {
@@ -2315,7 +2324,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "README.md",
-      "source_location": "L99",
+      "source_location": "L109",
       "_origin": "ast"
     },
     {
@@ -2324,7 +2333,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "README.md",
-      "source_location": "L111",
+      "source_location": "L121",
       "_origin": "ast"
     },
     {
@@ -2333,7 +2342,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "README.md",
-      "source_location": "L120",
+      "source_location": "L130",
       "_origin": "ast"
     },
     {
@@ -2342,7 +2351,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "README.md",
-      "source_location": "L127",
+      "source_location": "L137",
       "_origin": "ast"
     },
     {
@@ -3498,12 +3507,12 @@
       "_origin": "ast"
     },
     {
-      "id": "docs_guide_stock_to_live_step_3_install_magic_lantern_files",
-      "label": "Step 3: Install Magic Lantern Files",
+      "id": "docs_guide_stock_to_live_step_3_install_magic_lantern_files_the_3_stage_sync_discipline",
+      "label": "Step 3: Install Magic Lantern Files & The 3-Stage Sync Discipline",
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/guide_stock_to_live.md",
-      "source_location": "L66",
+      "source_location": "L68",
       "_origin": "ast"
     },
     {
@@ -3512,7 +3521,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/guide_stock_to_live.md",
-      "source_location": "L83",
+      "source_location": "L97",
       "_origin": "ast"
     },
     {
@@ -3521,7 +3530,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/guide_stock_to_live.md",
-      "source_location": "L90",
+      "source_location": "L104",
       "_origin": "ast"
     },
     {
@@ -3530,7 +3539,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/guide_stock_to_live.md",
-      "source_location": "L99",
+      "source_location": "L113",
       "_origin": "ast"
     },
     {
@@ -3539,7 +3548,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/guide_stock_to_live.md",
-      "source_location": "L107",
+      "source_location": "L121",
       "_origin": "ast"
     },
     {
@@ -4758,12 +4767,21 @@
       "_origin": "ast"
     },
     {
+      "id": "tools_card_prep_readme_the_3_stage_sync_discipline_what_to_sync_when_and_why",
+      "label": "🔄 The 3-Stage Sync Discipline: What to Sync, When, and Why",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "tools/card_prep/README.md",
+      "source_location": "L28",
+      "_origin": "ast"
+    },
+    {
       "id": "tools_card_prep_readme_2_mlinstall_exe_windows_assistant",
       "label": "2. `mlinstall.exe` (Windows Assistant)",
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "tools/card_prep/README.md",
-      "source_location": "L24",
+      "source_location": "L50",
       "_origin": "ast"
     },
     {
@@ -4772,7 +4790,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "tools/card_prep/README.md",
-      "source_location": "L29",
+      "source_location": "L55",
       "_origin": "ast"
     },
     {
@@ -4781,7 +4799,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "tools/card_prep/README.md",
-      "source_location": "L38",
+      "source_location": "L64",
       "_origin": "ast"
     },
     {
@@ -4790,7 +4808,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "tools/card_prep/README.md",
-      "source_location": "L49",
+      "source_location": "L75",
       "_origin": "ast"
     }
   ],
@@ -9665,22 +9683,12 @@
       "_origin": "ast"
     },
     {
-      "source": "readme_magic_lantern_for_canon_eos_4000d_rebel_t100_eos_3000d",
-      "target": "readme_bundled_tools_card_preparation_utilities",
+      "source": "readme_quick_start_how_to_get_it_running",
+      "target": "readme_step_3_copy_magic_lantern_files_sync_discipline",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L67",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "readme_bundled_tools_card_preparation_utilities",
-      "target": "readme_step_3_copy_magic_lantern_files",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "README.md",
-      "source_location": "L80",
+      "source_location": "L69",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9690,7 +9698,27 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L82",
+      "source_location": "L72",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "readme_magic_lantern_for_canon_eos_4000d_rebel_t100_eos_3000d",
+      "target": "readme_bundled_tools_card_preparation_utilities",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L77",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "readme_bundled_tools_card_preparation_utilities",
+      "target": "readme_step_3_copy_magic_lantern_files",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L90",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9700,7 +9728,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L85",
+      "source_location": "L95",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9710,7 +9738,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L92",
+      "source_location": "L102",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9720,7 +9748,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L93",
+      "source_location": "L103",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9730,7 +9758,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L94",
+      "source_location": "L104",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9740,7 +9768,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L95",
+      "source_location": "L105",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9750,7 +9778,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L99",
+      "source_location": "L109",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9760,7 +9788,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L107",
+      "source_location": "L117",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9770,7 +9798,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L111",
+      "source_location": "L121",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9780,7 +9808,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L120",
+      "source_location": "L130",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9790,7 +9818,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L127",
+      "source_location": "L137",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -11006,11 +11034,21 @@
     },
     {
       "source": "docs_guide_stock_to_live_2_step_by_step_procedure",
-      "target": "docs_guide_stock_to_live_step_3_install_magic_lantern_files",
+      "target": "docs_guide_stock_to_live_step_3_install_magic_lantern_files_the_3_stage_sync_discipline",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/guide_stock_to_live.md",
-      "source_location": "L66",
+      "source_location": "L68",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_guide_stock_to_live",
+      "target": "d_dev_reverse_4000d_docs_livesdcard_ml_md",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/guide_stock_to_live.md",
+      "source_location": "L78",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -11020,7 +11058,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/guide_stock_to_live.md",
-      "source_location": "L83",
+      "source_location": "L97",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -11030,7 +11068,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/guide_stock_to_live.md",
-      "source_location": "L90",
+      "source_location": "L104",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -11040,7 +11078,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/guide_stock_to_live.md",
-      "source_location": "L99",
+      "source_location": "L113",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -11050,7 +11088,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/guide_stock_to_live.md",
-      "source_location": "L107",
+      "source_location": "L121",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -13015,22 +13053,32 @@
       "_origin": "ast"
     },
     {
-      "source": "tools_card_prep_readme_included_utilities",
-      "target": "tools_card_prep_readme_2_mlinstall_exe_windows_assistant",
+      "source": "tools_card_prep_readme_sd_card_preparation_tools_utilities",
+      "target": "tools_card_prep_readme_the_3_stage_sync_discipline_what_to_sync_when_and_why",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "tools/card_prep/README.md",
-      "source_location": "L24",
+      "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast"
     },
     {
-      "source": "tools_card_prep_readme_included_utilities",
+      "source": "tools_card_prep_readme_the_3_stage_sync_discipline_what_to_sync_when_and_why",
+      "target": "tools_card_prep_readme_2_mlinstall_exe_windows_assistant",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tools/card_prep/README.md",
+      "source_location": "L50",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tools_card_prep_readme_the_3_stage_sync_discipline_what_to_sync_when_and_why",
       "target": "tools_card_prep_readme_3_cross_platform_alternative_scripts_make_bootable_py_linux_macos_windows",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "tools/card_prep/README.md",
-      "source_location": "L29",
+      "source_location": "L55",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -13040,7 +13088,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "tools/card_prep/README.md",
-      "source_location": "L38",
+      "source_location": "L64",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -13050,7 +13098,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "tools/card_prep/README.md",
-      "source_location": "L49",
+      "source_location": "L75",
       "weight": 1.0,
       "_origin": "ast"
     }

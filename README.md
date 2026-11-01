@@ -53,7 +53,9 @@ Use either the included Windows GUI utility or the cross-platform Python script:
   1. Open [`tools/card_prep/EOScard.exe`](tools/card_prep/).
   2. Select your SD card drive letter.
   3. Ensure both **BOOTDISK** and **EOS_DEVELOP** are checked.
-  4. Click the **Magic Lantern** logo or **Save**.
+  4. Click **Save**.
+  > [!IMPORTANT]
+  > **Do NOT use the online download buttons inside EOScard!** Those buttons fetch generic ML builds for older models (550D/60D). Use EOScard *solely* to write the bootloader markers, then copy our custom 4000D `autoexec.bin` and `ML/` folder in Step 3.
   *(EOScard is authored by Pel; official website & updates at [https://pel.hu/eoscard/](https://pel.hu/eoscard/))*.
 
 - **Option B (Cross-Platform Python - Linux / macOS / Windows):**
@@ -61,6 +63,14 @@ Use either the included Windows GUI utility or the cross-platform Python script:
   ```bash
   python scripts/make_bootable.py <DRIVE_LETTER_OR_DEVICE>
   ```
+
+---
+
+### Step 3: Copy Magic Lantern Files & Sync Discipline
+1. **Log Protection & Sync Safety:** If running tests, always use the included [`liveSDCard/Sync-SDCard.ps1`](liveSDCard/Sync-SDCard.ps1) (or `doit.bat`) to sync. It automatically pulls and archives camera logs *first* before pushing updates, preventing accidental deletion of crash dumps. Photos in `DCIM/` are never touched.
+2. Copy [`liveSDCard/autoexec.bin`](liveSDCard/autoexec.bin) (SHA-256: `D0E361E594E67F166F75DE0CC41BC03098063780433978DCEF026C103F36F7B0`) to the root of the SD card.
+3. Copy the complete [`liveSDCard/ML/`](liveSDCard/ML/) directory to the root of the SD card.
+4. Safely eject the SD card before removing it from your PC.
 
 ---
 
