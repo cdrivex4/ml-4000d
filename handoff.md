@@ -1,9 +1,9 @@
 # Canon EOS 4000D (Rebel T100 / 3000D) Reverse Engineering & Magic Lantern Port — Handoff Document
 
-**Last Updated:** 2026-10-26 02:15 (+04:00)  
+**Last Updated:** 2026-11-01 13:40 (+04:00)  
 **Workspace Root:** `d:\Dev\REverSE\4000D` (STRICT BOUNDARY: All files, tools, virtualenvs, and outputs reside within this directory)  
 **Primary Coordinator Conversation ID:** `6562844d-4251-4d95-9686-70018bc3c2fb`  
-**Status:** MILESTONE ACHIEVED — FULL HARDWARE AUTOBOOT & LED BLINK VERIFIED ON PHYSICAL CANON EOS 4000D (100% OPERATIONAL)
+**Status:** MILESTONE 4 ACHIEVED — LIVEVIEW BUFFERS MAPPED, AUTOMATED EDMAC DISASSEMBLER, DYNAMIC MODULES LOADED (T100_100.SYM), 100% PII CLEAN, COMMITTED & PUSHED TO GITHUB
 
 ---
 
@@ -165,3 +165,12 @@
    - **2.7" LCD Geometry:** Lifted menu help footer lines to $y=420$ and $y=442$ to prevent physical bezel clipping.
    - **Build Hash:** `autoexec.bin` SHA-256 `D0E361E594E67F166F75DE0CC41BC03098063780433978DCEF026C103F36F7B0` (404,256 bytes).
    - **Hardware Photographic Verification:** User confirmed Shoot, Debug, Display, and Customized Buttons menus rendering cleanly on physical camera LCD.
+8. **Step 8 — LiveView Framebuffer Mapping, Automated EDMAC Engine & Dynamic Modules [MILESTONE COMPLETED!]:**
+   - **LiveView YUV Framebuffer & Display State Object:** Reverse engineered `DISPLAY_STATEOBJ` in `ROM1.BIN` at `0x0002FBD4`. Mapped the active LiveView YUV422 raster pointer dynamically dereferenced at `(*(uint32_t*)(0x2FBD4 + 0xB0))` and orientation at `MEM(0x2FBD4 + 0x7C)`. This fixes LiveView overlays (Zebras, Focus Peaking, and real-time Histograms) which previously read stale uninitialized memory (`0x318C8`).
+   - **Automated EDMAC Reverse-Engineering Tool:** Created [`scripts/automate_edmac_mapping.py`](scripts/automate_edmac_mapping.py) using Capstone. Disassembles all 124 EDMAC callsites in `ROM1.BIN` and automatically derives EDMAC write/read channels, registers (`0xC0F04208`, `0xC0F04308`), state objects, and SRM raw buffer allocation pools (`0x01F68000` = 31.4 MB) in under 3 seconds.
+   - **Export Symbol Generator (`generate_sym.py`):** Created automated symbol table generator extracting 1,322 resolved kernel stubs and core functions from `magiclantern` ELF to produce `liveSDCard/ML/MODULES/t100_100.sym`.
+   - **Dynamic Module Architecture:** Modernized module build tools (`readme2modulestrings.py`, `checkdep.py`) to pure Python 3. Compiled and deployed 10 functional `.mo` modules to `liveSDCard/ML/MODULES/` (`bench.mo`, `dual_iso.mo`, `edmac.mo`, `ettr.mo`, `file_man.mo`, `mlv_lite.mo`, `pic_view.mo`, `raw_diag.mo`, `selftest.mo`, `silent.mo`).
+   - **Zero PII & Open-Source Push:** Stripped all host metadata from build tools and `Makefile.src`. Committed and pushed clean codebase, patch `patches/0001-4000D-Port-Magic-Lantern-to-Canon-EOS-4000D-Rebel-T1.patch`, and binaries to public GitHub repository: `https://github.com/cdrivex4/ml-4000d.git`.
+   - **Release Binary Checksums:**
+     - `liveSDCard/autoexec.bin` (404,256 bytes): MD5 `69642AFB96C294F270D6779CEF08A75C`, SHA-256 `0A5C14EAA8A8A15DA08426BA16E03D7143054A0FA2FA685C79AA01BAA3B29C79`.
+     - `liveSDCard/ML/MODULES/t100_100.sym` (34,815 bytes): MD5 `D03E39B243D63F8FC9144FBA847964BF`, SHA-256 `D4DACB0F69547B8CBC8C35E309D372BB722A1EE19D33F6AB51B78486AAAEAD02`.
