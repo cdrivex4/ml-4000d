@@ -636,9 +636,9 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1793491301.5156732,
-    "seen": 1793491330.7529178,
-    "ast_hash": "d864e60c06770baa8c95945389e6da99",
+    "mtime": 1793509076.4201844,
+    "seen": 1793509118.6326082,
+    "ast_hash": "b3348e9b22406fca5d0f0b6af80e49ba",
     "semantic_hash": ""
   },
   "docs/argon_audit_and_recommendations.md": {
@@ -666,9 +666,9 @@
     "semantic_hash": ""
   },
   "docs/dont_panic_troubleshooting.md": {
-    "mtime": 1793489615.4973674,
-    "seen": 1793490188.022628,
-    "ast_hash": "ed593bfa88f057e70e5c200f7515a75e",
+    "mtime": 1793509000.3900747,
+    "seen": 1793509118.6326082,
+    "ast_hash": "671d1e3a14bf506811e34a8e0cbf4943",
     "semantic_hash": ""
   },
   "docs/exfat_roadmap_and_verification.md": {

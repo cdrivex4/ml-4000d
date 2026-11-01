@@ -2292,30 +2292,30 @@
       "_origin": "ast"
     },
     {
-      "id": "readme_bundled_tools_card_preparation_utilities",
-      "label": "🧰 Bundled Tools & Card Preparation Utilities",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "README.md",
-      "source_location": "L77",
-      "_origin": "ast"
-    },
-    {
-      "id": "readme_step_3_copy_magic_lantern_files",
-      "label": "Step 3: Copy Magic Lantern Files",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "README.md",
-      "source_location": "L90",
-      "_origin": "ast"
-    },
-    {
       "id": "readme_step_4_power_on_operating_controls",
       "label": "Step 4: Power On & Operating Controls",
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "README.md",
-      "source_location": "L95",
+      "source_location": "L75",
+      "_origin": "ast"
+    },
+    {
+      "id": "readme_bundled_tools_card_preparation_utilities",
+      "label": "🧰 Bundled Tools & Card Preparation Utilities",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "README.md",
+      "source_location": "L83",
+      "_origin": "ast"
+    },
+    {
+      "id": "readme_complete_in_depth_documentation",
+      "label": "📚 Complete In-Depth Documentation",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "README.md",
+      "source_location": "L98",
       "_origin": "ast"
     },
     {
@@ -2324,7 +2324,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "README.md",
-      "source_location": "L109",
+      "source_location": "L107",
       "_origin": "ast"
     },
     {
@@ -2333,7 +2333,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "README.md",
-      "source_location": "L121",
+      "source_location": "L119",
       "_origin": "ast"
     },
     {
@@ -2342,7 +2342,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "README.md",
-      "source_location": "L130",
+      "source_location": "L128",
       "_origin": "ast"
     },
     {
@@ -2351,7 +2351,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "README.md",
-      "source_location": "L137",
+      "source_location": "L135",
       "_origin": "ast"
     },
     {
@@ -3147,12 +3147,57 @@
       "_origin": "ast"
     },
     {
+      "id": "docs_dont_panic_troubleshooting_scenario_f_canon_err_70_shooting_engine_task_watchdog_timeout",
+      "label": "Scenario F: Canon \"Err 70\" (Shooting Engine & Task Watchdog Timeout)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/dont_panic_troubleshooting.md",
+      "source_location": "L72",
+      "_origin": "ast"
+    },
+    {
+      "id": "docs_dont_panic_troubleshooting_scenario_g_canon_err_11_connection_target_not_found_during_wi_fi_ptp_setup",
+      "label": "Scenario G: Canon \"Err 11\" (Connection Target Not Found during Wi-Fi PTP Setup)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/dont_panic_troubleshooting.md",
+      "source_location": "L85",
+      "_origin": "ast"
+    },
+    {
+      "id": "docs_dont_panic_troubleshooting_scenario_h_update_file_error_when_selecting_fir_in_canon_firmware_menu",
+      "label": "Scenario H: \"Update file error\" when Selecting `.FIR` in Canon Firmware Menu",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/dont_panic_troubleshooting.md",
+      "source_location": "L95",
+      "_origin": "ast"
+    },
+    {
+      "id": "docs_dont_panic_troubleshooting_scenario_i_red_activity_led_pulses_5_times_and_freezes_the_post_5_blink_crash",
+      "label": "Scenario I: Red Activity LED Pulses 5 Times and Freezes (The Post-5-Blink Crash)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/dont_panic_troubleshooting.md",
+      "source_location": "L104",
+      "_origin": "ast"
+    },
+    {
+      "id": "docs_dont_panic_troubleshooting_scenario_j_debug_strings_overlaying_the_screen_no_submenu_fall_back_to_edit_mode",
+      "label": "Scenario J: Debug Strings Overlaying the Screen (\"No submenu, fall back to edit mode\")",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/dont_panic_troubleshooting.md",
+      "source_location": "L114",
+      "_origin": "ast"
+    },
+    {
       "id": "docs_dont_panic_troubleshooting_4_total_reversal_restoring_100_factory_canon_operation",
       "label": "4. Total Reversal: Restoring 100% Factory Canon Operation",
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/dont_panic_troubleshooting.md",
-      "source_location": "L72",
+      "source_location": "L121",
       "_origin": "ast"
     },
     {
@@ -9703,32 +9748,32 @@
       "_origin": "ast"
     },
     {
+      "source": "readme_quick_start_how_to_get_it_running",
+      "target": "readme_step_4_power_on_operating_controls",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L75",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
       "source": "readme_magic_lantern_for_canon_eos_4000d_rebel_t100_eos_3000d",
       "target": "readme_bundled_tools_card_preparation_utilities",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L77",
+      "source_location": "L83",
       "weight": 1.0,
       "_origin": "ast"
     },
     {
-      "source": "readme_bundled_tools_card_preparation_utilities",
-      "target": "readme_step_3_copy_magic_lantern_files",
+      "source": "readme_magic_lantern_for_canon_eos_4000d_rebel_t100_eos_3000d",
+      "target": "readme_complete_in_depth_documentation",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L90",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "readme_bundled_tools_card_preparation_utilities",
-      "target": "readme_step_4_power_on_operating_controls",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "README.md",
-      "source_location": "L95",
+      "source_location": "L98",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9738,7 +9783,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L102",
+      "source_location": "L100",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9748,7 +9793,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L103",
+      "source_location": "L101",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9758,7 +9803,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L104",
+      "source_location": "L102",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9768,7 +9813,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L105",
+      "source_location": "L103",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9778,7 +9823,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L109",
+      "source_location": "L107",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9788,7 +9833,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L117",
+      "source_location": "L115",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9798,7 +9843,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L121",
+      "source_location": "L119",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9808,7 +9853,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L130",
+      "source_location": "L128",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -9818,7 +9863,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L137",
+      "source_location": "L135",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -10653,12 +10698,62 @@
       "_origin": "ast"
     },
     {
+      "source": "docs_dont_panic_troubleshooting_3_common_don_t_panic_scenarios_fixes",
+      "target": "docs_dont_panic_troubleshooting_scenario_f_canon_err_70_shooting_engine_task_watchdog_timeout",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/dont_panic_troubleshooting.md",
+      "source_location": "L72",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_dont_panic_troubleshooting_3_common_don_t_panic_scenarios_fixes",
+      "target": "docs_dont_panic_troubleshooting_scenario_g_canon_err_11_connection_target_not_found_during_wi_fi_ptp_setup",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/dont_panic_troubleshooting.md",
+      "source_location": "L85",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_dont_panic_troubleshooting_3_common_don_t_panic_scenarios_fixes",
+      "target": "docs_dont_panic_troubleshooting_scenario_h_update_file_error_when_selecting_fir_in_canon_firmware_menu",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/dont_panic_troubleshooting.md",
+      "source_location": "L95",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_dont_panic_troubleshooting_3_common_don_t_panic_scenarios_fixes",
+      "target": "docs_dont_panic_troubleshooting_scenario_i_red_activity_led_pulses_5_times_and_freezes_the_post_5_blink_crash",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/dont_panic_troubleshooting.md",
+      "source_location": "L104",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_dont_panic_troubleshooting_3_common_don_t_panic_scenarios_fixes",
+      "target": "docs_dont_panic_troubleshooting_scenario_j_debug_strings_overlaying_the_screen_no_submenu_fall_back_to_edit_mode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/dont_panic_troubleshooting.md",
+      "source_location": "L114",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
       "source": "docs_dont_panic_troubleshooting_the_don_t_panic_guide_safe_failure_modes_recovery_on_canon_eos_4000d",
       "target": "docs_dont_panic_troubleshooting_4_total_reversal_restoring_100_factory_canon_operation",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/dont_panic_troubleshooting.md",
-      "source_location": "L72",
+      "source_location": "L121",
       "weight": 1.0,
       "_origin": "ast"
     },

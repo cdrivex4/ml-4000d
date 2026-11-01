@@ -69,6 +69,55 @@ Because no non-volatile flash was altered, a battery pull completely clears the 
 
 ---
 
+### Scenario F: Canon "Err 70" (Shooting Engine & Task Watchdog Timeout)
+- **What it looks like:** The LCD displays a standard Canon error screen: `"Err 70: Shooting is not possible due to an error. Turn the camera off and on again or re-install the battery."`
+- **What causes it:**
+  1. **CPU Spin-Loop Starvation:** Early bootloader spin-loops (`boot-d45-ch.c` or blocking LED delay loops) stalled the CPU for $> 5\text{ seconds}$ before Canon's `init_task` finished setting up peripherals, tripping the MPU communication watchdog.
+  2. **DryOS Task Deadlocks:** A task took a semaphore without releasing it, or an invalid stub jumped into mid-instruction space, causing a core DryOS task (`gui_main_task`, `JobMgr`, `DispSwCon`) to freeze.
+  3. **Heap Header Corruption:** Calling misidentified memory functions (like the internal 2-argument `AllocateMemory_pool` instead of `_AllocateMemory`) corrupted the `MALLOC_STRUCT` (`0x000640B4`) chunk table.
+- **How to recover:**
+  - **Err 70 is 100% volatile.** Turn the camera OFF, perform the 5-second battery pull, and reinsert.
+  - If developing new code: avoid long busy-wait loops during startup, ensure all semaphores and locks balance, and verify all memory stubs.
+  - If you remove the SD card, the camera will immediately boot standard Canon firmware without error.
+
+---
+
+### Scenario G: Canon "Err 11" (Connection Target Not Found during Wi-Fi PTP Setup)
+- **What it looks like:** During Step 1 of the bootflag setup in "Connect to smartphone" mode, the camera screen displays `"Err 11: Connection target not found"`.
+- **What causes it:** The camera was configured with a **Manual Static IP** address. Canon DryOS's internal socket and routing state machine fails to bind properly without a dynamic DHCP handshake.
+- **How to fix:**
+  1. Go into Canon Menu -> **Wi-Fi function**.
+  2. Change the IP address setting from Manual to **Auto IP (DHCP)**.
+  3. Reconnect to your Wi-Fi network. The camera will immediately acquire a valid lease and allow [`scripts/ptp_smartphone_bootflag.py`](../scripts/ptp_smartphone_bootflag.py) to connect without error.
+
+---
+
+### Scenario H: "Update file error" when Selecting `.FIR` in Canon Firmware Menu
+- **What it looks like:** The camera detects an update file on the SD card, begins reading it, and immediately aborts with the message `"Update file error"`.
+- **What causes it:** The DIGIC 4+ bootloader enforces strict HMAC-SHA1 cryptographic signature verification on `.FIR` containers. Modified FIR files (like `BOOT4000.FIR`) fail validation because the private HMAC key is held exclusively by Canon.
+- **How to fix:**
+  - Do **not** attempt to flash custom or modified `.FIR` files.
+  - We bypass FIR flashing entirely by enabling the camera's bootdisk flag over Wi-Fi PTP/IP using Canon's built-in, authorized event procedures (`PTP 0x9050` / `0x9052`).
+
+---
+
+### Scenario I: Red Activity LED Pulses 5 Times and Freezes (The Post-5-Blink Crash)
+- **What it looks like:** On power-on, the card activity LED blinks 5 distinct times (Cache lockdown -> Init task -> ML Init), but the LCD never turns on, and the camera freezes.
+- **What causes it:** A deterministic crash in `my_big_init_task` caused by unported stubs:
+  - `_AllocateMemory` mapped to the 2-argument pool function `0xFE11D6A0` (treated `size` as a struct pointer -> Data Abort).
+  - `_malloc` (`0xFE2C6BAC` from 1300D) jumping into mid-instruction code.
+  - `vsnprintf` (`0xFE2BC8A4` from 1300D) executing coprocessor instruction `cdp2 p3...` -> Undefined Instruction abort.
+- **How to fix:** Ensure you are running our verified release binary [`liveSDCard/autoexec.bin`](../liveSDCard/autoexec.bin) (SHA-256: `D0E361E594E67F16...`), where all 4000D stubs are corrected.
+
+---
+
+### Scenario J: Debug Strings Overlaying the Screen ("No submenu, fall back to edit mode")
+- **What it looks like:** White monospace debug text overlays the Canon shooting display or ML menus.
+- **What causes it:** Magic Lantern's `module_load_symbols()` failed to locate `t100_100.sym` on the SD card and automatically called `console_show()`. Once `console_visible = 1`, all internal `printf()` calls are printed directly onto the active VRAM bitmap layer.
+- **How to fix:** This is completely neutralized in our verified build by setting `module_autoload_disabled = 1` and sleeping `console_task`. If modifying source, ensure `console_show()` is not triggered on missing symbol files.
+
+---
+
 ## 4. Total Reversal: Restoring 100% Factory Canon Operation
 
 To return the camera to its absolute factory state:

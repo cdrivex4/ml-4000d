@@ -72,6 +72,12 @@ Use either the included Windows GUI utility or the cross-platform Python script:
 3. Copy the complete [`liveSDCard/ML/`](liveSDCard/ML/) directory to the root of the SD card.
 4. Safely eject the SD card before removing it from your PC.
 
+### Step 4: Power On & Operating Controls
+Turn the power switch to any shooting mode (`M`, `Av`, `Tv`, `P`):
+- **Open / Close ML Menu:** Press the **`Av / Trash`** button (or **`DISP`**).
+- **Navigate Items:** Use the **Directional Pad**.
+- **Edit / Select Setting:** Press the **`Q` (Quick Control)** button or turn the Main Dial.
+
 ---
 
 ## 🧰 Bundled Tools & Card Preparation Utilities
@@ -87,22 +93,14 @@ Everything needed to bootstrap and test the camera is bundled directly in this r
 | **`ptp_smartphone_disable_bootflag.py`** | [`scripts/ptp_smartphone_disable_bootflag.py`](scripts/ptp_smartphone_disable_bootflag.py) | Wi-Fi PTP/IP script to disable the bootflag and restore factory `BOOT=0`. |
 | **`download_arm_toolchain.py`** | [`scripts/download_arm_toolchain.py`](scripts/download_arm_toolchain.py) | Fetches and unpacks the portable xPack ARM GCC 13.3.1 toolchain for compiling from source. |
 
-### Step 3: Copy Magic Lantern Files
-1. Copy the precompiled [`liveSDCard/autoexec.bin`](liveSDCard/autoexec.bin) to the root of the SD card.
-2. Copy the complete [`liveSDCard/ML/`](liveSDCard/ML/) directory to the root of the SD card.
-3. Safely eject the SD card and insert it into your 4000D.
+---
 
-### Step 4: Power On & Operating Controls
-Turn the power switch to any shooting mode (`M`, `Av`, `Tv`, `P`):
-- **Open / Close ML Menu:** Press the **`Av / Trash`** button (or **`DISP`**).
-- **Navigate Items:** Use the **Directional Pad**.
-- **Edit / Select Setting:** Press the **`Q` (Quick Control)** button or turn the Main Dial.
+## 📚 Complete In-Depth Documentation
 
-For complete in-depth documentation, see:
-- 📖 [Stock to Live Setup Guide](docs/guide_stock_to_live.md)
-- 🛟 ["Don't Panic" Troubleshooting Guide](docs/dont_panic_troubleshooting.md)
-- 💾 [exFAT Storage Architecture & Roadmap](docs/exfat_roadmap_and_verification.md)
-- 🔬 [Deep Architectural Audit & Crash Resolutions](docs/argon_audit_and_recommendations.md)
+- 📖 [Stock to Live Setup Guide](docs/guide_stock_to_live.md) — Comprehensive step-by-step setup tutorial.
+- 🛟 ["Don't Panic" Troubleshooting Guide](docs/dont_panic_troubleshooting.md) — Solutions for **Err 70**, **Err 11**, FIR update errors, crash points, and the 5-second battery pull.
+- 💾 [exFAT Storage Architecture & Roadmap](docs/exfat_roadmap_and_verification.md) — VBR sector differences, bootloader checksums, and the $\ge 64\text{ GB}$ card roadmap.
+- 🔬 [Deep Architectural Audit & Crash Resolutions](docs/argon_audit_and_recommendations.md) — Detailed reverse engineering analysis of memory stubs, OLC screen dirty bits, and DryOS tasks.
 
 ---
 
