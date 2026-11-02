@@ -27,6 +27,45 @@ This port strictly enforces a **100% Volatile RAM Execution model** (`#undef CON
 
 ---
 
+## 🔬 Reverse Engineering Breakthroughs: Where ML Left Off & How We Solved It
+
+The initial 4000D reverse-engineering efforts began around 2019 on the Magic Lantern forum ([Topic 23369](https://www.magiclantern.fm/forum/index.php?topic=23369.0)) led by `@a1ex` and `ccritix`. While early ROM dumping and initial stubs were mapped, progress halted due to several undocumented DIGIC 4+ hardware quirks and deceptive architectural similarities with the Canon 1300D (Rebel T6).
+
+Here is how our clean-room implementation broke through each barrier:
+
+### 1. The 1300D Architectural Trap (Why Offsets Cannot Be Assumed)
+Because both the 1300D and 4000D share the DIGIC 4+ SoC and an 18MP APS-C sensor, previous attempts assumed the 4000D address space mirrored the 1300D. In practice, DryOS memory layouts and hardware mappings diverged significantly:
+- **LiveView State Object & YUV Framebuffer:**
+  - *The Trap:* On 1300D, `DISPLAY_STATEOBJ` was `0x0002FBB4` with an active YUV buffer pointer at `0x318C8`.
+  - *The 4000D Reality:* On 4000D, `DISPLAY_STATEOBJ` moved to `0x0002FBD4`. The active LiveView raster address is **not** static; it is dynamically resolved at runtime via `(*(uint32_t*)(0x2FBD4 + 0xB0))`, with display orientation at `MEM(0x2FBD4 + 0x7C)`. Assuming the 1300D address caused overlays (Zebras, Focus Peaking, Histograms) to read uninitialized memory.
+- **OSD Bitmap Plane & Stride:**
+  - *The Trap:* 1300D used `0x00056240` for bitmap info structures.
+  - *The 4000D Reality:* 4000D relocated `BMP_VRAM_INFO` (`PB_BITMAP_INFO`) to `0x00053360` with a 960-byte stride (active buffer at `0x2087100`), while LiveView descriptors relocated to `0x0005339C`.
+- **Card Activity LED (MMIO vs GPIO Table):**
+  - *The Trap:* Legacy DIGIC 4 cameras toggled the Card LED directly at MMIO register `0xC0220134`.
+  - *The 4000D Reality:* On 4000D, `0xC0220134` is obsolete. Canon routes LED control through an internal GPIO table (pin 77 / `0x4D` at `0xFE7FE250`) mapped to MMIO `0xC022D1E0`, driven by control words `0x0093D800` (LED ON) and `0x0083DC00` (LED OFF).
+- **OLC Shooting Screen Tearing:**
+  - *The Trap:* Canon's background WindowSystem task aggressively repainted the default shooting status screen every 20–50ms, wiping out Magic Lantern menus.
+  - *The Solution:* We hooked `WINSYS_BMP_DIRTY_BIT_NEG` at `MEM(0x3BE8C + 0x3C)` and suppressed redraws at `0x3BE8C + 0x30`, yielding a clean, tear-free OSD.
+
+### 2. The Bootflag Deadlock (FIR HMAC Signatures & The Wi-Fi Solution)
+- *The Problem:* The Canon EOS 4000D bootloader enforces cryptographic HMAC-SHA1 signatures on `.FIR` files. Running a modified `.FIR` (like `BOOT4000.FIR`) fails immediately with *"Update file error"*. Compounding this, Canon completely removed the "EOS Utility" USB menu entry from the 4000D firmware, blocking traditional USB PTP pairing.
+- *The Breakthrough:* We analyzed the camera's native *"Connect to smartphone"* mode over Wi-Fi, discovering it exposes standard CIPA DC-005 PTP/IP on TCP port 15740. By emulating an iPhone client handshake and sending DryOS PTP event procedures (`PTP 0x9050` / `0x9052` `EnableBootDisk`), we enabled `BOOT=1` non-destructively in seconds without flashing a single byte of ROM.
+
+### 3. Automated Reverse-Engineering Pipeline (`scripts/automate_edmac_mapping.py`)
+Rather than relying on tedious manual disassembly for future firmware revisions or related models, we built an autonomous reverse-engineering pipeline:
+- Powered by Capstone, it disassembles `ROM1.BIN` in **under 3 seconds**.
+- Automatically indexes all 124 `SetEDmac` callsites.
+- Extracts hardware write channels (`0xC0F04208` for HD, `0xC0F04308` for LiveView).
+- Maps the Shared Resource Memory pool manager (`SRM_MGR = 0x0002F7D4`) and confirms the 31.4 MB raw buffer pool (`SRM_BUFFER_SIZE = 0x01F68000`).
+
+### 4. Dynamic Module Loading & Clean Build Pipeline
+- Built [`scripts/generate_sym.py`](scripts/generate_sym.py) to resolve and export all 1,322 core kernel symbols into `t100_100.sym`, enabling dynamic `.mo` module runtime linking.
+- Rewrote legacy Python 2 build utilities (`readme2modulestrings.py`, `checkdep.py`) into modern Python 3.
+- Stripped all host metadata leaks (`whoami` / `hostname`) to ensure 100% reproducible, zero-PII open-source builds.
+
+---
+
 ## 🚀 Quick Start: How to Get It Running
 
 ### Prerequisites
