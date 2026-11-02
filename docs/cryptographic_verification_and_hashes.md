@@ -29,8 +29,8 @@ The following open-source binaries are compiled from this repository:
 | Binary / Build Target | Size (Bytes) | MD5 Checksum | SHA-256 Checksum | Verification Status |
 | :--- | :--- | :--- | :--- | :--- |
 | **`autoexec.bin`** (Milestone 1)<br>(Minimal Hello-World Target) | 6,496 | `2C74CEA720B566CCC96155DACD18CB22` | `4946ED587048FE0BD3C88E95E541FCB22CFDA136426294B3395FDB853718B0E8` | Hardware LED Verified |
-| **`autoexec.bin`** (Current Live Build)<br>(Full UI & Dialogs, Clean OSD) | 404,256 | `69642AFB96C294F270D6779CEF08A75C` | `0A5C14EAA8A8A15DA08426BA16E03D7143054A0FA2FA685C79AA01BAA3B29C79` | **Hardware LCD Verified** |
-| **`t100_100.sym`** (Export Symbol Table)<br>(1,322 Kernel & Core Symbols) | 34,815 | `D03E39B243D63F8FC9144FBA847964BF` | `D4DACB0F69547B8CBC8C35E309D372BB722A1EE19D33F6AB51B78486AAAEAD02` | **Verified Dynamic Linking** |
+| **`autoexec.bin`** (Current Live Build)<br>(Full UI & Dialogs, Clean OSD) | 404,384 | `F8911C0EC5D7B13B805CC29FBD76390B` | `22283EF5464136F62E9B0F2C57DF30F273484F753BD569E09ECC1D56F2DFB8A6` | **Hardware LCD Verified** |
+| **`t100_100.sym`** (Export Symbol Table)<br>(1,322 Kernel & Core Symbols) | 34,815 | `866643AF8B5DC59E1375D07BE1E07449` | `4D7C175DE1CA7555292478A45256E969628037FB008338B0B2FAA9A4AD26E019` | **Verified Dynamic Linking** |
 
 ---
 

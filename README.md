@@ -107,7 +107,7 @@ Use either the included Windows GUI utility or the cross-platform Python script:
 
 ### Step 3: Copy Magic Lantern Files & Sync Discipline
 1. **Log Protection & Sync Safety:** If running tests, always use the included [`liveSDCard/Sync-SDCard.ps1`](liveSDCard/Sync-SDCard.ps1) (or `doit.bat`) to sync. It automatically pulls and archives camera logs *first* before pushing updates, preventing accidental deletion of crash dumps. Photos in `DCIM/` are never touched.
-2. Copy [`liveSDCard/autoexec.bin`](liveSDCard/autoexec.bin) (SHA-256: `0A5C14EAA8A8A15DA08426BA16E03D7143054A0FA2FA685C79AA01BAA3B29C79`) to the root of the SD card.
+2. Copy [`liveSDCard/autoexec.bin`](liveSDCard/autoexec.bin) (SHA-256: `22283EF5464136F62E9B0F2C57DF30F273484F753BD569E09ECC1D56F2DFB8A6`) to the root of the SD card.
 3. Copy the complete [`liveSDCard/ML/`](liveSDCard/ML/) directory to the root of the SD card.
 4. Safely eject the SD card before removing it from your PC.
 
@@ -152,8 +152,8 @@ To verify the integrity of the provided release binary:
 
 | File | Size | MD5 | SHA-256 |
 | :--- | :--- | :--- | :--- |
-| **`liveSDCard/autoexec.bin`** | 404,256 bytes | `69642AFB96C294F270D6779CEF08A75C` | `0A5C14EAA8A8A15DA08426BA16E03D7143054A0FA2FA685C79AA01BAA3B29C79` |
-| **`liveSDCard/ML/MODULES/t100_100.sym`** | 34,815 bytes | `D03E39B243D63F8FC9144FBA847964BF` | `D4DACB0F69547B8CBC8C35E309D372BB722A1EE19D33F6AB51B78486AAAEAD02` |
+| **`liveSDCard/autoexec.bin`** | 404,384 bytes | `F8911C0EC5D7B13B805CC29FBD76390B` | `22283EF5464136F62E9B0F2C57DF30F273484F753BD569E09ECC1D56F2DFB8A6` |
+| **`liveSDCard/ML/MODULES/t100_100.sym`** | 34,815 bytes | `866643AF8B5DC59E1375D07BE1E07449` | `4D7C175DE1CA7555292478A45256E969628037FB008338B0B2FAA9A4AD26E019` |
 
 *Full cryptographic hashes table for firmware verification available in [`docs/cryptographic_verification_and_hashes.md`](docs/cryptographic_verification_and_hashes.md).*
 
